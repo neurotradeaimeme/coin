@@ -30,421 +30,291 @@
 
 <style>
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
-:root{
+:root { --card: #0C141B; --card2: #101C26; --line: #18242F; --green: #00E07A; --gs: rgba(0,224,122,.10); --gb: rgba(0,224,122,.30); --txt: #EAF2F7; --muted: #7A8C9A; --dim: #586976; --red: #FF5C6C; --amber: #FFB84D; --blue: #4DA3FF; --sat: env(safe-area-inset-top,0px); --sab: env(safe-area-inset-bottom,0px); --bar: calc(68px + var(--sab)); }
 
---card:#0C141B;--card2:#101C26;--line:#18242F;
+html { text-size-adjust: 100%; background: #05080B; }
 
---green:#00E07A;--gs:rgba(0,224,122,.10);--gb:rgba(0,224,122,.30);
+body { margin: 0; background: #05080B; color: var(--txt); overscroll-behavior-y: none; font-family: Inter, -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif; font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
---txt:#EAF2F7;--muted:#7A8C9A;--dim:#586976;--red:#FF5C6C;--amber:#FFB84D;--blue:#4DA3FF;
+a { color: inherit; text-decoration: none; }
 
---sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+button, input, select { font-family: inherit; }
 
---bar:calc(68px + var(--sab));
+#app { max-width: 520px; margin: 0 auto; min-height: 100svh; background: linear-gradient(#0A1219 0%, #080E13 320px, #080E13 100%); border-left: 1px solid #101C26; border-right: 1px solid #101C26; position: relative; overflow-x: hidden; padding-bottom: calc(var(--bar) + 26px); }
 
-}
+#crash { display: none; max-width: 520px; margin: 12px auto; padding: 14px; border-radius: 14px; background: #1A0C10; border: 1px solid rgba(255,92,108,.45); color: #FF9AA4; font-family: monospace; font-size: 12px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
 
-html{-webkit-text-size-adjust:100%;background:#05080B}
+#crash b { display: block; color: #FF5C6C; font-size: 13px; margin-bottom: 6px; }
 
-body{margin:0;background:#05080B;color:var(--txt);overscroll-behavior-y:none;
+.hdr { display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 40; padding: calc(10px + var(--sat)) 14px 10px; background: rgba(8,14,19,.94); border-bottom: 1px solid var(--line); }
 
-font-family:Inter,-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+.icon-btn { width: 44px; height: 44px; border-radius: 12px; border: 0; background: transparent; color: var(--txt); display: grid; place-items: center; cursor: pointer; padding: 0; }
 
-font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.icon-btn:active { background: #111C26; }
 
-a{color:inherit;text-decoration:none}
+.logo { display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 16px; flex: 1; justify-content: center; white-space: nowrap; }
 
-button,input,select{font-family:inherit}
+.logo .ai { color: var(--green); }
 
-#app{max-width:520px;margin:0 auto;min-height:100svh;
+.hdr-right { display: flex; align-items: center; gap: 8px; min-width: 44px; justify-content: flex-end; }
 
-background:linear-gradient(180deg,#0A1219 0%,#080E13 320px,#080E13 100%);
+.hdr-bal { font-size: 12px; font-weight: 700; color: var(--green); background: var(--gs); border: 1px solid var(--gb); padding: 4px 9px; border-radius: 20px; white-space: nowrap; }
 
-border-left:1px solid #101C26;border-right:1px solid #101C26;
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex: 0 0 auto; }
 
-position:relative;overflow-x:hidden;padding-bottom:calc(var(--bar) + 26px)}
+.flashup { animation: fu .7s ease 1; }
 
-#crash{display:none;max-width:520px;margin:12px auto;padding:14px;border-radius:14px;
+.flashdown { animation: fd .7s ease 1; }
 
-background:#1A0C10;border:1px solid rgba(255,92,108,.45);color:#FF9AA4;
+@keyframes fu { 0% { color: #00E07A; } 100% { color: #EAF2F7; } }
 
-font-family:monospace;font-size:12px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+@keyframes fd { 0% { color: #FFB84D; } 100% { color: #EAF2F7; } }
 
-#crash b{display:block;color:#FF5C6C;font-size:13px;margin-bottom:6px}
+.wrap { padding: 18px 16px 8px; }
 
-.hdr{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:40;
+h1 { font-size: 26px; line-height: 1.16; letter-spacing: -.7px; margin: 0 0 10px; font-weight: 800; }
 
-padding:10px 14px;padding-top:calc(10px + var(--sat));
+h2 { font-size: 19px; margin: 0 0 4px; font-weight: 700; }
 
-background:rgba(8,14,19,.94);border-bottom:1px solid var(--line)}
+h3 { font-size: 15px; margin: 0 0 6px; font-weight: 700; }
 
-.icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:transparent;
+p { margin: 0 0 12px; color: var(--muted); font-size: 14.5px; }
 
-color:var(--txt);display:grid;place-items:center;cursor:pointer;padding:0}
+.sub { font-size: 14.5px; color: var(--muted); }
 
-.icon-btn:active{background:#111C26}
+.eyebrow { font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--dim); font-weight: 700; }
 
-.logo{display:flex;align-items:center;gap:7px;font-weight:800;font-size:16px;flex:1;
+.sec { margin: 26px 0 0; }
 
-justify-content:center;white-space:nowrap}
+.card { background: linear-gradient(180deg,var(--card2),var(--card)); border: 1px solid var(--line); border-radius: 20px; padding: 16px; }
 
-.logo .ai{color:var(--green)}
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 
-.hdr-right{display:flex;align-items:center;gap:8px;min-width:44px;justify-content:flex-end}
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-.hdr-bal{font-size:12px;font-weight:700;color:var(--green);background:var(--gs);
+.hr { height: 1px; background: var(--line); margin: 14px 0; border: 0; }
 
-border:1px solid var(--gb);padding:4px 9px;border-radius:20px;white-space:nowrap}
+.badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 700; color: var(--green); background: var(--gs); border: 1px solid var(--gb); padding: 6px 11px; border-radius: 20px; text-transform: uppercase; }
 
-.dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex:none}
+.badge.gray { color: var(--muted); background: #111C26; border-color: var(--line); }
 
-.flashup{animation:fu .7s ease}
+.badge.amber { color: var(--amber); background: rgba(255,184,77,.1); border-color: rgba(255,184,77,.3); }
 
-.flashdown{animation:fd .7s ease}
+.pill { display: inline-block; font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 20px; background: #111C26; color: var(--muted); border: 1px solid var(--line); white-space: nowrap; text-transform: uppercase; }
 
-@keyframes fu{0%{color:#00E07A}100%{color:#EAF2F7}}
+.pill.g { color: var(--green); background: var(--gs); border-color: var(--gb); }
 
-@keyframes fd{0%{color:#FFB84D}100%{color:#EAF2F7}}
+.pill.a { color: var(--amber); background: rgba(255,184,77,.1); border-color: rgba(255,184,77,.3); }
 
-.wrap{padding:18px 16px 8px}
+.pill.r { color: var(--red); background: rgba(255,92,108,.1); border-color: rgba(255,92,108,.3); }
 
-h1{font-size:26px;line-height:1.16;letter-spacing:-.7px;margin:0 0 10px;font-weight:800}
+.pill.b { color: var(--blue); background: rgba(77,163,255,.1); border-color: rgba(77,163,255,.3); }
 
-h2{font-size:19px;margin:0 0 4px;font-weight:700}
+.statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0 0; }
 
-h3{font-size:15px;margin:0 0 6px;font-weight:700}
+.stat { background: linear-gradient(180deg,var(--card2),var(--card)); border: 1px solid var(--line); border-radius: 16px; padding: 13px 14px; min-width: 0; }
 
-p{margin:0 0 12px;color:var(--muted);font-size:14.5px}
+.stat .lbl { font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); font-weight: 700; }
 
-.sub{font-size:14.5px;color:var(--muted)}
+.stat .val { font-size: 21px; font-weight: 800; margin-top: 6px; }
 
-.eyebrow{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);font-weight:700}
+.stat .val.g { color: var(--green); }
 
-.sec{margin:26px 0 0}
+.stat .hint { font-size: 11px; color: var(--dim); margin-top: 2px; }
 
-.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+.up { color: var(--green); }
 
-border-radius:20px;padding:16px}
+.down { color: var(--red); }
 
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ico { width: 14px; height: 14px; stroke: var(--green); fill: none; stroke-width: 2.2; flex: 0 0 auto; }
 
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border-radius: 15px; border: 1px solid var(--line); background: #111C26; color: var(--txt); font-weight: 700; cursor: pointer; padding: 0 16px; appearance: none; text-align: center; font-size: 15px; }
 
-.hr{height:1px;background:var(--line);margin:14px 0;border:0}
+.btn:active { transform: scale(.975); background: #152330; }
 
-.badge{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;
+.btn.primary { background: linear-gradient(#00F085, #00C468); color: #04140C; border-color: transparent; }
 
-color:var(--green);background:var(--gs);border:1px solid var(--gb);padding:6px 11px;
+.btn.ghost { background: transparent; }
 
-border-radius:20px;text-transform:uppercase}
+.btn.sm { min-height: 44px; font-size: 14px; border-radius: 13px; width: auto; padding: 0 15px; }
 
-.badge.gray{color:var(--muted);background:#111C26;border-color:var(--line)}
+.btn.tiny { min-height: 38px; font-size: 12.5px; border-radius: 11px; padding: 0 12px; width: auto; }
 
-.badge.amber{color:var(--amber);background:rgba(255,184,77,.1);border-color:rgba(255,184,77,.3)}
+.btn.danger { color: var(--red); border-color: rgba(255,92,108,.3); background: rgba(255,92,108,.07); }
 
-.pill{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:20px;
+.btn.amber { color: var(--amber); border-color: rgba(255,184,77,.3); background: rgba(255,184,77,.08); }
 
-background:#111C26;color:var(--muted);border:1px solid var(--line);white-space:nowrap;
+.btn[disabled] { opacity: .45; }
 
-text-transform:uppercase}
+.cta-row { display: flex; gap: 10px; margin-top: 16px; }
 
-.pill.g{color:var(--green);background:var(--gs);border-color:var(--gb)}
+.field { margin-bottom: 13px; }
 
-.pill.a{color:var(--amber);background:rgba(255,184,77,.1);border-color:rgba(255,184,77,.3)}
+.field label { display: block; font-size: 11.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--dim); font-weight: 700; margin-bottom: 6px; }
 
-.pill.r{color:var(--red);background:rgba(255,92,108,.1);border-color:rgba(255,92,108,.3)}
+input, select { width: 100%; min-height: 52px; background: #0A1219; border: 1px solid var(--line); border-radius: 14px; color: var(--txt); padding: 0 14px; outline: none; font-size: 16px; appearance: none; }
 
-.pill.b{color:var(--blue);background:rgba(77,163,255,.1);border-color:rgba(77,163,255,.3)}
+input:focus, select:focus { border-color: var(--gb); }
 
-.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 0}
+input::placeholder { color: #4A5A66; }
 
-.stat{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+input[disabled], select[disabled] { opacity: .55; background: #080E13; }
 
-border-radius:16px;padding:13px 14px;min-width:0}
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 9px; }
 
-.stat .lbl{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);font-weight:700}
+.chip { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--line); background: #0A1219; color: var(--muted); border-radius: 20px; padding: 0 15px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
 
-.stat .val{font-size:21px;font-weight:800;margin-top:6px}
+.chip.on { color: var(--green); border-color: var(--gb); background: var(--gs); }
 
-.stat .val.g{color:var(--green)}
+.addr { display: flex; gap: 8px; align-items: center; background: #0A1219; border: 1px dashed var(--gb); border-radius: 14px; padding: 12px 13px; }
 
-.stat .hint{font-size:11px;color:var(--dim);margin-top:2px}
+.addr code { font-size: 12.5px; word-break: break-all; color: #B9E9D2; line-height: 1.45; flex: 1; font-family: monospace; }
 
-.up{color:var(--green)}
+.codebox { display: flex; gap: 9px; justify-content: center; margin: 16px 0; }
 
-.down{color:var(--red)}
+.codebox .d { width: 44px; height: 54px; border-radius: 13px; background: #0A1219; border: 1px solid var(--gb); display: grid; place-items: center; font-size: 22px; font-weight: 800; color: var(--green); }
 
-.ico{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2.2;flex:none}
+.tabs { display: flex; gap: 6px; background: #0A1219; border: 1px solid var(--line); border-radius: 15px; padding: 5px; overflow-x: auto; }
 
-.ico.m{stroke:var(--muted)}
+.tab { flex: 1; display: grid; place-items: center; min-height: 42px; border-radius: 11px; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; white-space: nowrap; padding: 0 10px; }
 
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;
+.tab.on { background: #132029; color: var(--green); }
 
-border-radius:15px;border:1px solid var(--line);background:#111C26;color:var(--txt);
+.lst { display: flex; flex-direction: column; gap: 10px; }
 
-font-weight:700;cursor:pointer;padding:0 16px;-webkit-appearance:none;appearance:none;
+.item { display: flex; gap: 12px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 13px; min-width: 0; }
 
-text-align:center;font-size:15px}
+.av { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 14px; flex: 0 0 auto; background: #122430; border: 1px solid var(--line); color: var(--green); }
 
-.btn:active{transform:scale(.975);background:#152330}
+.item .t { flex: 1; min-width: 0; }
 
-.btn.primary{background:linear-gradient(180deg,#00F085,#00C468);color:#04140C;border-color:transparent}
+.item .t b { display: block; font-size: 14.5px; font-weight: 700; }
 
-.btn.ghost{background:transparent}
+.item .t span { font-size: 12.5px; color: var(--dim); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.btn.sm{min-height:44px;font-size:14px;border-radius:13px;width:auto;padding:0 15px}
+.stars { color: var(--amber); font-size: 12.5px; white-space: nowrap; }
 
-.btn.tiny{min-height:38px;font-size:12.5px;border-radius:11px;padding:0 12px;width:auto}
+.tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 
-.btn.danger{color:var(--red);border-color:rgba(255,92,108,.3);background:rgba(255,92,108,.07)}
+.tbl th { text-align: left; font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); font-weight: 700; padding: 0 0 9px; }
 
-.btn.amber{color:var(--amber);border-color:rgba(255,184,77,.3);background:rgba(255,184,77,.08)}
+.tbl td { padding: 11px 0; border-top: 1px solid var(--line); }
 
-.btn[disabled]{opacity:.45}
+.tbl td:last-child, .tbl th:last-child { text-align: right; }
 
-.cta-row{display:flex;gap:10px;margin-top:16px}
+.rev-scroll { display: flex; gap: 11px; overflow-x: auto; padding: 2px 16px 6px; }
 
-.field{margin-bottom:13px}
+.rev { min-width: 270px; max-width: 270px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
 
-.field label{display:block;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;
+.rev p { font-size: 13px; line-height: 1.5; color: #C6D4DE; margin: 9px 0 0; }
 
-color:var(--dim);font-weight:700;margin-bottom:6px}
+.banner { display: flex; gap: 11px; align-items: flex-start; background: rgba(0,224,122,.06); border: 1px solid var(--gb); border-radius: 16px; padding: 13px 14px; margin-bottom: 14px; }
 
-input,select{width:100%;min-height:52px;background:#0A1219;border:1px solid var(--line);
+.banner.warn { background: rgba(255,184,77,.07); border-color: rgba(255,184,77,.35); }
 
-border-radius:14px;color:var(--txt);padding:0 14px;outline:none;font-size:16px;
+.banner.blue { background: rgba(77,163,255,.07); border-color: rgba(77,163,255,.3); }
 
--webkit-appearance:none;appearance:none}
+.banner b { font-size: 13.5px; display: block; }
 
-input:focus,select:focus{border-color:var(--gb)}
+.banner span { font-size: 12.5px; color: var(--muted); display: block; }
 
-input::placeholder{color:#4A5A66}
+.bot { background: linear-gradient(180deg,var(--card2),var(--card)); border: 1px solid var(--line); border-radius: 20px; padding: 14px; margin-bottom: 11px; }
 
-input[disabled],select[disabled]{opacity:.55;background:#080E13}
+.bot.on { border-color: var(--gb); }
 
-input[type=number]{-moz-appearance:textfield}
+.bot.locked { opacity: .66; }
 
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.bot .hd { display: flex; gap: 11px; align-items: center; min-width: 0; }
 
-.chip{display:inline-flex;align-items:center;justify-content:center;min-height:40px;
+.bot .nm { font-weight: 800; font-size: 15px; }
 
-border:1px solid var(--line);background:#0A1219;color:var(--muted);border-radius:20px;
+.bot .ds { font-size: 12.5px; color: var(--dim); margin-top: 2px; }
 
-padding:0 15px;font-size:13.5px;font-weight:700;cursor:pointer}
+.spark { width: 84px; height: 34px; flex: 0 0 auto; }
 
-.chip.on{color:var(--green);border-color:var(--gb);background:var(--gs)}
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
 
-.addr{display:flex;gap:8px;align-items:center;background:#0A1219;
+.metric { background: #0A1219; border: 1px solid var(--line); border-radius: 12px; padding: 8px 9px; }
 
-border:1px dashed var(--gb);border-radius:14px;padding:12px 13px}
+.metric .k { font-size: 9.5px; text-transform: uppercase; color: var(--dim); font-weight: 700; }
 
-.addr code{font-size:12.5px;word-break:break-all;color:#B9E9D2;line-height:1.45;flex:1;
+.metric .v { font-size: 14px; font-weight: 800; margin-top: 3px; }
 
-font-family:monospace}
+.bar { height: 8px; background: #0A1219; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; margin-top: 11px; }
 
-.codebox{display:flex;gap:9px;justify-content:center;margin:16px 0}
+.bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg,#00C468,#00F085); transition: width .4s linear; }
 
-.codebox .d{width:44px;height:54px;border-radius:13px;background:#0A1219;
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,.62); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 60; }
 
-border:1px solid var(--gb);display:grid;place-items:center;font-size:22px;font-weight:800;color:var(--green)}
+.scrim.on { opacity: 1; pointer-events: auto; }
 
-.tabs{display:flex;gap:6px;background:#0A1219;border:1px solid var(--line);
+.drawer { position: fixed; top: 0; left: 0; bottom: 0; width: 272px; max-width: 84vw; background: #0A1219; border-right: 1px solid var(--line); z-index: 70; transform: translateX(-102%); transition: transform .26s; padding: calc(16px + var(--sat)) 14px calc(20px + var(--sab)); overflow-y: auto; }
 
-border-radius:15px;padding:5px;overflow-x:auto}
+.drawer.on { transform: none; }
 
-.tab{flex:1;display:grid;place-items:center;min-height:42px;border-radius:11px;font-size:12.5px;
+.drawer .lnk { display: flex; align-items: center; gap: 11px; min-height: 50px; padding: 0 12px; border-radius: 13px; font-weight: 600; color: #C6D4DE; cursor: pointer; }
 
-font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;padding:0 10px}
+.drawer .lnk svg { width: 20px; height: 20px; stroke: currentcolor; fill: none; stroke-width: 1.9; flex: 0 0 auto; }
 
-.tab.on{background:#132029;color:var(--green)}
+.drawer .lnk.on { background: #111C26; color: var(--green); }
 
-.lst{display:flex;flex-direction:column;gap:10px}
+.tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 520px; z-index: 50; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: rgba(8,14,19,.97); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + var(--sab)); }
 
-.item{display:flex;gap:12px;align-items:center;background:var(--card);
+.tb { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 52px; border-radius: 13px; color: var(--dim); font-size: 10px; font-weight: 700; }
 
-border:1px solid var(--line);border-radius:16px;padding:13px;min-width:0}
+.tb svg { width: 22px; height: 22px; stroke: currentcolor; fill: none; stroke-width: 1.9; }
 
-.av{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:800;
+.tb.on { color: var(--green); }
 
-font-size:14px;flex:none;background:#122430;border:1px solid var(--line);color:var(--green)}
+.tb.on svg { stroke: var(--green); }
 
-.item .t{flex:1;min-width:0}
+.toast { position: fixed; left: 50%; bottom: calc(var(--bar) + 14px); transform: translate(-50%,18px); background: #101C26; border: 1px solid var(--gb); color: var(--txt); padding: 13px 17px; border-radius: 14px; font-size: 13.5px; font-weight: 600; z-index: 90; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 88vw; text-align: center; }
 
-.item .t b{display:block;font-size:14.5px;font-weight:700}
+.toast.on { opacity: 1; transform: translate(-50%,0); }
 
-.item .t span{font-size:12.5px;color:var(--dim);display:block;overflow:hidden;
+.ticker { display: flex; gap: 9px; align-items: center; font-size: 12px; color: var(--muted); background: #0A1219; border: 1px solid var(--line); border-radius: 13px; padding: 10px 12px; overflow: hidden; white-space: nowrap; }
 
-text-overflow:ellipsis;white-space:nowrap}
+.steps { display: flex; flex-direction: column; gap: 11px; }
 
-.stars{color:var(--amber);font-size:12.5px;white-space:nowrap}
+.step { display: flex; gap: 12px; }
 
-.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.step .n { width: 28px; height: 28px; flex: 0 0 auto; border-radius: 9px; background: var(--gs); border: 1px solid var(--gb); color: var(--green); font-weight: 800; font-size: 13px; display: grid; place-items: center; }
 
-.tbl th{text-align:left;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;
+details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 9px; }
 
-color:var(--dim);font-weight:700;padding:0 0 9px}
+details summary { font-weight: 700; font-size: 14px; cursor: pointer; list-style: none; }
 
-.tbl td{padding:11px 0;border-top:1px solid var(--line)}
+details p { margin: 10px 0 0; font-size: 13.5px; }
 
-.tbl td:last-child,.tbl th:last-child{text-align:right}
+.foot { padding: 22px 16px calc(10px + var(--sab)); text-align: center; color: var(--dim); font-size: 11.5px; }
 
-.rev-scroll{display:flex;gap:11px;overflow-x:auto;padding:2px 16px 6px}
+.center { text-align: center; }
 
-.rev{min-width:270px;max-width:270px;background:var(--card);border:1px solid var(--line);
+.mt { margin-top: 14px; }
 
-border-radius:16px;padding:14px}
+.mt2 { margin-top: 22px; }
 
-.rev p{font-size:13px;line-height:1.5;color:#C6D4DE;margin:9px 0 0}
+.mb { margin-bottom: 14px; }
 
-.banner{display:flex;gap:11px;align-items:flex-start;
+.green { color: var(--green); }
 
-background:rgba(0,224,122,.06);border:1px solid var(--gb);border-radius:16px;
+.amber { color: var(--amber); }
 
-padding:13px 14px;margin-bottom:14px}
+.blue { color: var(--blue); }
 
-.banner.warn{background:rgba(255,184,77,.07);border-color:rgba(255,184,77,.35)}
+.mini { font-size: 11.5px; color: var(--dim); }
 
-.banner.blue{background:rgba(77,163,255,.07);border-color:rgba(77,163,255,.3)}
+.a2hs { position: fixed; left: 50%; transform: translate(-50%,140%); bottom: calc(var(--bar) + 8px); width: calc(100% - 28px); max-width: 492px; z-index: 55; background: #0F1A23; border: 1px solid var(--gb); border-radius: 16px; padding: 12px 14px; display: flex; gap: 11px; align-items: center; transition: transform .3s; }
 
-.banner b{font-size:13.5px;display:block}
+.a2hs.on { transform: translate(-50%,0); }
 
-.banner span{font-size:12.5px;color:var(--muted);display:block}
+.a2hs b { font-size: 13px; display: block; }
 
-.bot{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+.a2hs span { font-size: 11.5px; color: var(--muted); display: block; }
 
-border-radius:20px;padding:14px;margin-bottom:11px}
-
-.bot.on{border-color:var(--gb)}
-
-.bot .hd{display:flex;gap:11px;align-items:center;min-width:0}
-
-.bot .nm{font-weight:800;font-size:15px}
-
-.bot .ds{font-size:12.5px;color:var(--dim);margin-top:2px}
-
-.spark{width:84px;height:34px;flex:none}
-
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-
-.metric{background:#0A1219;border:1px solid var(--line);border-radius:12px;padding:8px 9px}
-
-.metric .k{font-size:9.5px;text-transform:uppercase;color:var(--dim);font-weight:700}
-
-.metric .v{font-size:14px;font-weight:800;margin-top:3px}
-
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.62);opacity:0;pointer-events:none;
-
-transition:opacity .2s;z-index:60}
-
-.scrim.on{opacity:1;pointer-events:auto}
-
-.drawer{position:fixed;top:0;left:0;bottom:0;width:272px;max-width:84vw;background:#0A1219;
-
-border-right:1px solid var(--line);z-index:70;transform:translateX(-102%);
-
-transition:transform .26s;padding:calc(16px + var(--sat)) 14px calc(20px + var(--sab));
-
-overflow-y:auto}
-
-.drawer.on{transform:none}
-
-.drawer .lnk{display:flex;align-items:center;gap:11px;min-height:50px;padding:0 12px;
-
-border-radius:13px;font-weight:600;color:#C6D4DE;cursor:pointer}
-
-.drawer .lnk svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;flex:none}
-
-.drawer .lnk.on{background:#111C26;color:var(--green)}
-
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
-
-z-index:50;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
-
-background:rgba(8,14,19,.97);border-top:1px solid var(--line);
-
-padding:6px 6px calc(6px + var(--sab))}
-
-.tb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-
-min-height:52px;border-radius:13px;color:var(--dim);font-size:10px;font-weight:700}
-
-.tb svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9}
-
-.tb.on{color:var(--green)}
-
-.tb.on svg{stroke:var(--green)}
-
-.toast{position:fixed;left:50%;bottom:calc(var(--bar) + 14px);transform:translate(-50%,18px);
-
-background:#101C26;border:1px solid var(--gb);color:var(--txt);padding:13px 17px;
-
-border-radius:14px;font-size:13.5px;font-weight:600;z-index:90;opacity:0;
-
-transition:opacity .2s;pointer-events:none;max-width:88vw;text-align:center}
-
-.toast.on{opacity:1;transform:translate(-50%,0)}
-
-.ticker{display:flex;gap:9px;align-items:center;font-size:12px;color:var(--muted);
-
-background:#0A1219;border:1px solid var(--line);border-radius:13px;padding:10px 12px;
-
-overflow:hidden;white-space:nowrap}
-
-.steps{display:flex;flex-direction:column;gap:11px}
-
-.step{display:flex;gap:12px}
-
-.step .n{width:28px;height:28px;flex:none;border-radius:9px;background:var(--gs);
-
-border:1px solid var(--gb);color:var(--green);font-weight:800;font-size:13px;
-
-display:grid;place-items:center}
-
-details{background:var(--card);border:1px solid var(--line);border-radius:14px;
-
-padding:14px;margin-bottom:9px}
-
-details summary{font-weight:700;font-size:14px;cursor:pointer;list-style:none}
-
-details p{margin:10px 0 0;font-size:13.5px}
-
-.foot{padding:22px 16px calc(10px + var(--sab));text-align:center;color:var(--dim);font-size:11.5px}
-
-.center{text-align:center}
-
-.mt{margin-top:14px}
-
-.mt2{margin-top:22px}
-
-.mb{margin-bottom:14px}
-
-.green{color:var(--green)}
-
-.amber{color:var(--amber)}
-
-.blue{color:var(--blue)}
-
-.mini{font-size:11.5px;color:var(--dim)}
-
-.a2hs{position:fixed;left:50%;transform:translate(-50%,140%);bottom:calc(var(--bar) + 8px);
-
-width:calc(100% - 28px);max-width:492px;z-index:55;background:#0F1A23;
-
-border:1px solid var(--gb);border-radius:16px;padding:12px 14px;display:flex;gap:11px;
-
-align-items:center;transition:transform .3s}
-
-.a2hs.on{transform:translate(-50%,0)}
-
-.a2hs b{font-size:13px;display:block}
-
-.a2hs span{font-size:11.5px;color:var(--muted);display:block}
-
-.a2hs .x{width:30px;height:30px;flex:none;border-radius:9px;background:#16242F;
-
-display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointer}
+.a2hs .x { width: 30px; height: 30px; flex: 0 0 auto; border-radius: 9px; background: #16242F; display: grid; place-items: center; color: var(--muted); font-weight: 800; cursor: pointer; }
 
 </style>
 
@@ -464,11 +334,11 @@ display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointe
 
 <button class="icon-btn" data-action="drawer" aria-label="Menu">
 
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
 
 </button>
 
-<a class="logo" href="#/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="2.2"><path d="M2 12h4l2.5-6 3.5 12 3-8 2 2h5"/></svg>NeuroTrade<span class="ai">AI</span></a>
+<a class="logo" href="#/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="2.2"><path d="M2 12h4l2.5-6 3.5 12 3-8 2 2h5"></path></svg>NeuroTrade<span class="ai">AI</span></a>
 
 <div class="hdr-right"><span id="hdrBal" class="hdr-bal" style="display:none">&euro;0</span><span class="dot"></span></div>
 
@@ -476,7 +346,7 @@ display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointe
 
 <main id="view"></main>
 
-<div class="foot" id="foot">NeuroTrade AI - Demo platform - Not investment advice</div>
+<div class="foot" id="foot" style="display:none;">NeuroTrade AI - Not investment advice</div>
 
 </div>
 
@@ -488,7 +358,7 @@ display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointe
 
 <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;padding:6px 10px 16px">
 
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="2.2"><path d="M2 12h4l2.5-6 3.5 12 3-8 2 2h5"/></svg>NeuroTrade<span style="color:#00E07A">AI</span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="2.2"><path d="M2 12h4l2.5-6 3.5 12 3-8 2 2h5"></path></svg>NeuroTrade<span style="color:#00E07A">AI</span>
 
 </div>
 
@@ -496,7 +366,7 @@ display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointe
 
 <div class="hr"></div>
 
-<div class="mini" style="padding:0 12px">Version 3.1 - engine online</div>
+<div class="mini" style="padding:0 12px">Version 4.0 - engine online</div>
 
 </nav>
 
@@ -504,7 +374,7 @@ display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointe
 
 <div class="a2hs" id="a2hs">
 
-<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="1.9" style="flex:none"><rect x="5" y="2.5" width="14" height="19" rx="3.2"/><path d="M12 6.5v7M9.5 11l2.5 2.5L14.5 11"/></svg>
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="1.9" style="flex:none"><rect x="5" y="2.5" width="14" height="19" rx="3.2"></rect><path d="M12 6.5v7M9.5 11l2.5 2.5L14.5 11"></path></svg>
 
 <div style="flex:1"><b>Install NeuroTrade</b><span>Tap Share, then Add to Home Screen.</span></div>
 
@@ -522,25 +392,9 @@ display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointe
 
 <script>
 
-window.__crash = function (msg) {
+window.__crash = function (msg) { var d = document.getElementById('crash'); if (!d) return; d.style.display = 'block'; d.innerHTML = '<b>Something went wrong</b>' + String(msg).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
 
-  var d = document.getElementById('crash');
-
-  if (!d) { return; }
-
-  d.style.display = 'block';
-
-  d.innerHTML = '<b>Er ging iets mis</b>' + String(msg).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-
-};
-
-window.onerror = function (m, f, l) {
-
-  window.__crash(m + '  |  regel ' + l);
-
-  return false;
-
-};
+window.onerror = function (m, f, l) { window.__crash(m + '  |  line ' + l); return false; };
 
 </script>
 
@@ -556,13 +410,25 @@ window.onerror = function (m, f, l) {
 
 var DEFAULTS = {
 
-  adminCode: 'admin123',
+  adminCode: '482913',
 
   minDeposit: 100,
 
   minWithdraw: 20,
 
-  allocPct: 25,
+  botCapital: 100,
+
+  dailyCapPerBot: 400,
+
+  showCode: 'auto',
+
+  emailProvider: 'formsubmit',
+
+  emailjsPublicKey: '',
+
+  emailjsServiceId: '',
+
+  emailjsTemplateId: '',
 
   connectUrl: 'https://neurotradeai.eu.cc',
 
@@ -578,11 +444,11 @@ var DEFAULTS = {
 
 var LS = {
 
-  g: function (k, d) { try { var v = localStorage.getItem('nt3_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  g: function (k, d) { try { var v = localStorage.getItem('nt4_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
 
-  s: function (k, v) { try { localStorage.setItem('nt3_' + k, JSON.stringify(v)); } catch (e) {} },
+  s: function (k, v) { try { localStorage.setItem('nt4_' + k, JSON.stringify(v)); } catch (e) {} },
 
-  c: function (k) { try { localStorage.removeItem('nt3_' + k); } catch (e) {} }
+  c: function (k) { try { localStorage.removeItem('nt4_' + k); } catch (e) {} }
 
 };
 
@@ -618,69 +484,29 @@ if (!(TX instanceof Array)) { TX = []; }
 
 function save() { LS.s('users', USERS); LS.s('session', SESSION); LS.s('tx', TX); }
 
-function me() {
+function me() { var i; for (i = 0; i < USERS.length; i++) { if (USERS[i].email === SESSION) { return USERS[i]; } } return null; }
 
-  var i;
+function userBy(e) { var i; for (i = 0; i < USERS.length; i++) { if (USERS[i].email === e) { return USERS[i]; } } return null; }
 
-  for (i = 0; i < USERS.length; i++) { if (USERS[i].email === SESSION) { return USERS[i]; } }
+function botById(id) { var i; for (i = 0; i < BOTS.length; i++) { if (BOTS[i].id === id) { return BOTS[i]; } } return null; }
 
-  return null;
+function norm(e) { return String(e === null || e === undefined ? '' : e).trim().toLowerCase(); }
 
-}
+function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
 
-function userBy(e) {
-
-  var i;
-
-  for (i = 0; i < USERS.length; i++) { if (USERS[i].email === e) { return USERS[i]; } }
-
-  return null;
-
-}
+function nameFromEmail(e) { return e.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
 
 
 
-function eur(n) {
+function eur(n) { n = Math.round(n || 0); try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n); } catch (e) { return 'EUR ' + n; } }
 
-  n = Math.round(n || 0);
+function eur2(n) { n = +(n || 0); try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); } catch (e) { return 'EUR ' + n.toFixed(2); } }
 
-  try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n); }
+function num(n) { n = Math.round(n || 0); try { return new Intl.NumberFormat('en-GB').format(n); } catch (e) { return '' + n; } }
 
-  catch (e) { return 'EUR ' + n; }
+function dt(ts) { try { return new Date(ts).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
 
-}
-
-function eur2(n) {
-
-  n = +(n || 0);
-
-  try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
-
-  catch (e) { return 'EUR ' + n.toFixed(2); }
-
-}
-
-function num(n) {
-
-  n = Math.round(n || 0);
-
-  try { return new Intl.NumberFormat('en-GB').format(n); } catch (e) { return '' + n; }
-
-}
-
-function dt(ts) {
-
-  try { return new Date(ts).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); }
-
-  catch (e) { return ''; }
-
-}
-
-function dd(ts) {
-
-  try { return new Date(ts).toLocaleDateString('en-GB'); } catch (e) { return ''; }
-
-}
+function dd(ts) { try { return new Date(ts).toLocaleDateString('en-GB'); } catch (e) { return ''; } }
 
 
 
@@ -694,17 +520,17 @@ var payIdx = 0;
 
 var BOTS = [
 
-  { id: 'pepesniper', name: 'PepeSniper AI', tag: 'New-launch sniper', ds: 'Scans new meme launches and snipes liquidity within 400ms.', roi: 18.4, wr: 78, trades: 1482, risk: 'High', min: 100, seed: 7 },
+  { id: 'pepesniper', name: 'PepeSniper AI', tag: 'New-launch sniper', ds: 'Scans new meme launches and snipes liquidity within 400ms.', wr: 78, trades: 1482, risk: 'High', seed: 7 },
 
-  { id: 'solmeme', name: 'SolMeme Sentinel', tag: 'Solana momentum', ds: 'Momentum and liquidity analysis on Solana meme pairs.', roi: 24.7, wr: 83, trades: 964, risk: 'High', min: 250, seed: 13 },
+  { id: 'solmeme', name: 'SolMeme Sentinel', tag: 'Solana momentum', ds: 'Momentum and liquidity analysis on Solana meme pairs.', wr: 83, trades: 964, risk: 'High', seed: 13 },
 
-  { id: 'dogepulse', name: 'DogePulse Neural', tag: 'Sentiment and trend', ds: 'Neural sentiment model on socials plus order flow.', roi: 12.1, wr: 71, trades: 2310, risk: 'Medium', min: 100, seed: 21 },
+  { id: 'dogepulse', name: 'DogePulse Neural', tag: 'Sentiment and trend', ds: 'Neural sentiment model on socials plus order flow.', wr: 71, trades: 2310, risk: 'Medium', seed: 21 },
 
-  { id: 'bonkrunner', name: 'BonkRunner ML', tag: 'Micro-cap rotation', ds: 'Rotates capital between micro-caps with the highest volume.', roi: 15.9, wr: 74, trades: 1744, risk: 'High', min: 150, seed: 31 },
+  { id: 'bonkrunner', name: 'BonkRunner ML', tag: 'Micro-cap rotation', ds: 'Rotates capital between micro-caps with the highest volume.', wr: 74, trades: 1744, risk: 'High', seed: 31 },
 
-  { id: 'wifwhale', name: 'WIF Whales Tracker', tag: 'Wallet tracking', ds: 'Tracks whale wallets and copies entries with a short delay.', roi: 9.8, wr: 69, trades: 3120, risk: 'Medium', min: 100, seed: 44 },
+  { id: 'wifwhale', name: 'WIF Whales Tracker', tag: 'Wallet tracking', ds: 'Tracks whale wallets and copies entries with a short delay.', wr: 69, trades: 3120, risk: 'Medium', seed: 44 },
 
-  { id: 'flokigrid', name: 'Floki Grid Bot', tag: 'Grid and DCA', ds: 'Grid and DCA strategy on meme pairs, low volatility.', roi: 7.2, wr: 66, trades: 5402, risk: 'Low', min: 100, seed: 52 }
+  { id: 'flokigrid', name: 'Floki Grid Bot', tag: 'Grid and DCA', ds: 'Grid and DCA strategy on meme pairs, low volatility.', wr: 66, trades: 5402, risk: 'Low', seed: 52 }
 
 ];
 
@@ -746,13 +572,7 @@ var ICONS = {
 
 function $(s) { return document.querySelector(s); }
 
-function esc(s) {
-
-  return String(s === null || s === undefined ? '' : s)
-
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-}
+function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
 function buzz(ms) { try { if (navigator.vibrate) { navigator.vibrate(ms || 8); } } catch (e) {} }
 
@@ -764,37 +584,21 @@ function statusOf(u) { if (isActive(u)) { return 'active'; } if (isVerified(u)) 
 
 function go(h) { location.hash = h; }
 
+function unlockedBots(u) { if (!u) { return 0; } return Math.min(BOTS.length, Math.floor((u.deposited || 0) / CFG.botCapital)); }
+
 
 
 function toast(m) {
 
-  var t = $('#toast');
+  var t = $('#toast'); if (!t) { return; }
 
-  if (!t) { return; }
+  t.textContent = m; t.className = 'toast on';
 
-  t.textContent = m;
-
-  t.className = 'toast on';
-
-  clearTimeout(t._t);
-
-  t._t = setTimeout(function () { t.className = 'toast'; }, 2500);
+  clearTimeout(t._t); t._t = setTimeout(function () { t.className = 'toast'; }, 2600);
 
 }
 
-function randAddr() {
-
-  var c = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-
-  var s = '';
-
-  var i;
-
-  for (i = 0; i < 44; i++) { s += c.charAt(Math.floor(Math.random() * c.length)); }
-
-  return s;
-
-}
+function randAddr() { var c = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz', s = '', i; for (i = 0; i < 44; i++) { s += c.charAt(Math.floor(Math.random() * c.length)); } return s; }
 
 function randCode() { return String(Math.floor(100000 + Math.random() * 900000)); }
 
@@ -802,43 +606,23 @@ function randCode() { return String(Math.floor(100000 + Math.random() * 900000))
 
 function spark(seed, up) {
 
-  var w = 84, h = 34, s = (seed * 9301 + 49297) % 233280;
-
-  var v = 0.45, pts = [], st = w / 17, d = '', i;
+  var w = 84, h = 34, s = (seed * 9301 + 49297) % 233280, v = 0.45, pts = [], st = w / 17, d = '', i;
 
   function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
 
-  for (i = 0; i < 18; i++) {
+  for (i = 0; i < 18; i++) { v += (rnd() - 0.42) * 0.85; if (v < 0.06) { v = 0.06; } if (v > 0.94) { v = 0.94; } pts.push(v); }
 
-    v += (rnd() - 0.42) * 0.85;
-
-    if (v < 0.06) { v = 0.06; }
-
-    if (v > 0.94) { v = 0.94; }
-
-    pts.push(v);
-
-  }
-
-  for (i = 0; i < pts.length; i++) {
-
-    d += (i ? 'L' : 'M') + (i * st).toFixed(1) + ',' + (h - pts[i] * h).toFixed(1) + ' ';
-
-  }
+  for (i = 0; i < pts.length; i++) { d += (i ? 'L' : 'M') + (i * st).toFixed(1) + ',' + (h - pts[i] * h).toFixed(1) + ' '; }
 
   return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none"><path d="' + d + '" fill="none" stroke="' + (up ? '#00E07A' : '#FF5C6C') + '" stroke-width="2"/></svg>';
 
 }
 
-
-
 function animNum(el, from, to, ms, fmt) {
 
   if (!el) { return; }
 
-  var t0 = Date.now();
-
-  ms = ms || 700;
+  var t0 = Date.now(); ms = ms || 700;
 
   function step() {
 
@@ -856,19 +640,7 @@ function animNum(el, from, to, ms, fmt) {
 
 }
 
-function flash(el, up) {
-
-  if (!el) { return; }
-
-  el.classList.remove('flashup', 'flashdown');
-
-  void el.offsetWidth;
-
-  el.classList.add(up ? 'flashup' : 'flashdown');
-
-  setTimeout(function () { el.classList.remove('flashup', 'flashdown'); }, 750);
-
-}
+function flash(el, up) { if (!el) { return; } el.classList.remove('flashup', 'flashdown'); void el.offsetWidth; el.classList.add(up ? 'flashup' : 'flashdown'); setTimeout(function () { el.classList.remove('flashup', 'flashdown'); }, 750); }
 
 
 
@@ -886,17 +658,17 @@ function ensure(u) {
 
   if (u.allocated === undefined) { u.allocated = 0; }
 
-  var i, id, found, p, tot = 0;
+  var i, id, found, p, tot = 0, b;
 
   for (i = 0; i < u.bots.length; i++) {
 
-    id = u.bots[i];
-
-    found = false;
+    id = u.bots[i]; found = false;
 
     for (p = 0; p < u.pos.length; p++) { if (u.pos[p].bot === id) { found = true; } }
 
     if (!found) {
+
+      b = botById(id);
 
       u.pos.push({
 
@@ -906,11 +678,13 @@ function ensure(u) {
 
         size: +(1 + Math.random() * 9).toFixed(2),
 
-        alloc: 0,
+        alloc: CFG.botCapital,
 
-        pnl: +(20 + Math.random() * 420).toFixed(2),
+        pnl: 0, pct: 0, earned: 0, window: 0, prog: 0,
 
-        pct: +(0.6 + Math.random() * 3.4).toFixed(2)
+        windowStart: Date.now(),
+
+        seed: b ? b.seed : 10
 
       });
 
@@ -926,11 +700,169 @@ function ensure(u) {
 
 }
 
-function userTx(em) {
 
-  em = em || SESSION;
 
-  return TX.filter(function (t) { return t.email === em; }).sort(function (a, b) { return b.ts - a.ts; });
+function tickPos(p, now) {
+
+  var DAY = 86400000, cap = CFG.dailyCapPerBot;
+
+  if (!p.windowStart) { p.windowStart = now; }
+
+  if (p.earned === undefined) { p.earned = 0; }
+
+  var elapsed = now - p.windowStart, guard = 0;
+
+  while (elapsed >= DAY && guard < 500) {
+
+    p.earned += cap * (0.80 + Math.random() * 0.20);
+
+    p.windowStart += DAY;
+
+    elapsed = now - p.windowStart;
+
+    guard++;
+
+  }
+
+  var prog = Math.max(0, Math.min(1, elapsed / DAY));
+
+  var ease = Math.pow(prog, 0.5);
+
+  var jitter = 1 + Math.sin(now / 45000 + (p.seed || 0)) * 0.05;
+
+  p.window = Math.min(cap, cap * ease * jitter);
+
+  p.pnl = +(p.earned + p.window).toFixed(2);
+
+  p.pct = +((p.pnl / CFG.botCapital) * 100).toFixed(2);
+
+  p.prog = p.window / cap;
+
+}
+
+
+
+function userTx(em) { em = em || SESSION; return TX.filter(function (t) { return t.email === em; }).sort(function (a, b) { return b.ts - a.ts; }); }
+
+
+
+function sendViaFormSubmit(email, code) {
+
+  var payload = {
+
+    _subject: 'NeuroTrade AI - your login code',
+
+    _template: 'table',
+
+    _captcha: 'false',
+
+    Code: code,
+
+    Valid: '15 minutes',
+
+    Message: 'Your NeuroTrade AI code is ' + code + '. Valid for 15 minutes.'
+
+  };
+
+  try {
+
+    return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+
+      body: JSON.stringify(payload)
+
+    }).then(function (r) { return r.ok; }).catch(function () { return false; });
+
+  } catch (e) { return Promise.resolve(false); }
+
+}
+
+
+
+function loadEmailJS() {
+
+  if (window.emailjs) { return Promise.resolve(true); }
+
+  return new Promise(function (res) {
+
+    var s = document.createElement('script');
+
+    s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+
+    s.onload = function () { res(!!window.emailjs); };
+
+    s.onerror = function () { res(false); };
+
+    document.head.appendChild(s);
+
+  });
+
+}
+
+function sendViaEmailJS(email, code) {
+
+  return loadEmailJS().then(function (ok) {
+
+    if (!ok) { return false; }
+
+    try {
+
+      window.emailjs.init({ publicKey: CFG.emailjsPublicKey });
+
+      return window.emailjs.send(CFG.emailjsServiceId, CFG.emailjsTemplateId, {
+
+        to_email: email, code: code, message: 'Your NeuroTrade AI code is ' + code + '. Valid for 15 minutes.'
+
+      }).then(function () { return true; }).catch(function () { return false; });
+
+    } catch (e) { return false; }
+
+  });
+
+}
+
+function sendCodeEmail(email, code) {
+
+  if (CFG.emailProvider === 'emailjs' && CFG.emailjsPublicKey && CFG.emailjsServiceId && CFG.emailjsTemplateId) {
+
+    return sendViaEmailJS(email, code).then(function (ok) { return ok ? true : sendViaFormSubmit(email, code); });
+
+  }
+
+  return sendViaFormSubmit(email, code);
+
+}
+
+
+
+function issueCode(u) {
+
+  u.code = randCode();
+
+  u.codeExp = Date.now() + 15 * 60000;
+
+  u.codeSentAt = Date.now();
+
+  u.codeSentOk = null;
+
+  save();
+
+  if (route() === 'verify') { render(); }
+
+  sendCodeEmail(u.email, u.code).then(function (ok) {
+
+    var cu = userBy(u.email);
+
+    if (cu) { cu.codeSentOk = ok; save(); }
+
+    if (route() === 'verify') { render(); }
+
+    toast(ok ? 'Code sent to ' + u.email : 'Sending failed - the code is on screen');
+
+  });
 
 }
 
@@ -938,7 +870,7 @@ function userTx(em) {
 
 var ROUTES = {
 
-  '': 'landing', '/': 'landing', '/login': 'login', '/register': 'register', '/verify': 'verify',
+  '': 'landing', '/': 'landing', '/login': 'login', '/register': 'login', '/verify': 'verify',
 
   '/dashboard': 'dashboard', '/bots': 'bots', '/deposit': 'deposit', '/withdraw': 'withdraw',
 
@@ -954,93 +886,29 @@ var ADMIN_TAB = 'overview';
 
 
 
-function route() {
-
-  var h = location.hash.replace('#', '') || '/';
-
-  return ROUTES[h] || 'landing';
-
-}
+function route() { var h = location.hash.replace('#', '') || '/'; return ROUTES[h] || 'landing'; }
 
 
 
 function renderChrome() {
 
-  var r = route();
+  var r = route(), u = me(), hb = $('#hdrBal');
 
-  var u = me();
+  if (hb) { hb.style.display = (u && r !== 'admin') ? 'inline-block' : 'none'; if (u) { hb.textContent = eur2(u.balance); } }
 
-  var hb = $('#hdrBal');
-
-  if (hb) {
-
-    hb.style.display = (u && r !== 'admin') ? 'inline-block' : 'none';
-
-    if (u) { hb.textContent = eur2(u.balance); }
-
-  }
-
-  var tabs = [
-
-    ['', 'home', 'Home', '#/'],
-
-    ['bots', 'bot', 'Bots', '#/bots'],
-
-    ['deposit', 'dep', 'Deposit', '#/deposit'],
-
-    ['withdraw', 'wd', 'Withdraw', '#/withdraw'],
-
-    ['account', 'user', 'Account', '#/account']
-
-  ];
+  var tabs = [['', 'home', 'Home', '#/'], ['bots', 'bot', 'Bots', '#/bots'], ['deposit', 'dep', 'Deposit', '#/deposit'], ['withdraw', 'wd', 'Withdraw', '#/withdraw'], ['account', 'user', 'Account', '#/account']];
 
   var tb = $('#tabbar');
 
-  if (tb) {
+  if (tb) { tb.innerHTML = tabs.map(function (t) { return '<a class="tb ' + (r === t[0] ? 'on' : '') + '" href="' + t[3] + '">' + ICONS[t[1]] + '<span>' + t[2] + '</span></a>'; }).join(''); }
 
-    tb.innerHTML = tabs.map(function (t) {
+  var links = [['', 'home', 'Home'], ['dashboard', 'chart', 'Dashboard'], ['bots', 'bot', 'AI Bots'], ['deposit', 'dep', 'Deposit'], ['withdraw', 'wd', 'Withdraw'], ['account', 'user', 'My account']];
 
-      return '<a class="tb ' + (r === t[0] ? 'on' : '') + '" href="' + t[3] + '">' + ICONS[t[1]] + '<span>' + t[2] + '</span></a>';
+  var html = links.map(function (l) { return '<a class="lnk ' + (r === l[0] ? 'on' : '') + '" href="#' + (l[0] ? '/' + l[0] : '/') + '">' + ICONS[l[1]] + l[2] + '</a>'; }).join('');
 
-    }).join('');
+  if (u) { html += '<div class="lnk" data-action="logout">' + ICONS.logout + 'Log out</div>'; }
 
-  }
-
-  var links = [
-
-    ['', 'home', 'Home'],
-
-    ['dashboard', 'chart', 'Dashboard'],
-
-    ['bots', 'bot', 'AI Bots'],
-
-    ['deposit', 'dep', 'Deposit'],
-
-    ['withdraw', 'wd', 'Withdraw'],
-
-    ['account', 'user', 'My account'],
-
-    ['admin', 'shield', 'Admin panel']
-
-  ];
-
-  var html = links.map(function (l) {
-
-    return '<a class="lnk ' + (r === l[0] ? 'on' : '') + '" href="#' + (l[0] ? '/' + l[0] : '/') + '">' + ICONS[l[1]] + l[2] + '</a>';
-
-  }).join('');
-
-  if (u) {
-
-    html += '<div class="lnk" data-action="logout">' + ICONS.logout + 'Log out</div>';
-
-  } else {
-
-    html += '<a class="lnk" href="#/login">' + ICONS.shield + 'Log in</a>';
-
-    html += '<a class="lnk" href="#/register">' + ICONS.user + 'Create account</a>';
-
-  }
+  else { html += '<a class="lnk" href="#/login">' + ICONS.user + 'Log in or sign up</a>'; }
 
   var dl = $('#drawerLinks');
 
@@ -1054,27 +922,23 @@ function actionBanner(u) {
 
   if (!isVerified(u)) {
 
-    return '<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
-
-      '<div><b>Action verification required</b><span>Confirm your email address to unlock deposits, bots and withdrawals.</span></div></div>' +
-
-      '<a class="btn amber mb" href="#/verify">Verify email now</a>';
+    return '<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>Confirm your email</b><span>Enter the 6-digit code we emailed you to unlock deposits, bots and withdrawals.</span></div></div><a class="btn amber mb" href="#/verify">Enter code</a>';
 
   }
 
   if (!isActive(u)) {
 
-    return '<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
-
-      '<div><b>Deposit at least ' + eur(CFG.minDeposit) + ' to activate</b><span>You have ' + eur2(u.deposited || 0) + ' deposited.</span></div></div>' +
-
-      '<a class="btn primary mb" href="#/deposit">Deposit now</a>';
+    return '<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>Deposit at least ' + eur(CFG.minDeposit) + ' to activate</b><span>You have ' + eur2(u.deposited || 0) + ' deposited.</span></div></div><a class="btn primary mb" href="#/deposit">Deposit now</a>';
 
   }
 
   return '';
 
 }
+
+
+
+function stars(n) { var a = '', i; for (i = 0; i < 5; i++) { a += (i < n ? '&#9733;' : '&#9734;'); } return a; }
 
 
 
@@ -1100,9 +964,7 @@ function vLanding() {
 
   ];
 
-  var h = '';
-
-  h += '<div class="wrap">';
+  var h = '<div class="wrap">';
 
   h += '<span class="badge">&#9679; Live - <span id="stat-users">' + num(STATS.users) + '</span> users</span>';
 
@@ -1124,19 +986,17 @@ function vLanding() {
 
   h += '<div class="ticker mt"><span class="dot"></span><span>Latest payout: <b id="payName">' + PAY[0][0] + '</b> received <b class="green" id="payAmt">' + eur(PAY[0][1]) + '</b> - just now</span></div>';
 
-  h += '<div class="cta-row"><a class="btn primary" href="' + (me() ? '#/dashboard' : '#/register') + '">' + (me() ? 'Go to dashboard' : 'Create free account') + '</a>';
-
-  h += '<a class="btn ghost" href="#/bots" style="flex:0 0 42%">View bots</a></div>';
+  h += '<div class="cta-row"><a class="btn primary" href="' + (me() ? '#/dashboard' : '#/login') + '">' + (me() ? 'Go to dashboard' : 'Create free account') + '</a><a class="btn ghost" href="#/bots" style="flex:0 0 42%">View bots</a></div>';
 
   h += '<div class="sec"><div class="eyebrow">How it works</div><h2>Live in 5 steps</h2><div class="steps mt">';
 
-  h += '<div class="step"><div class="n">1</div><div><b>Create an account</b><div class="mini">Email and password, done in 20 seconds.</div></div></div>';
+  h += '<div class="step"><div class="n">1</div><div><b>Enter your email</b><div class="mini">No name, no password. Just your email.</div></div></div>';
 
-  h += '<div class="step"><div class="n">2</div><div><b>Confirm your email</b><div class="mini">6-digit code unlocks your account.</div></div></div>';
+  h += '<div class="step"><div class="n">2</div><div><b>Enter the 6-digit code</b><div class="mini">We email it to you. It unlocks your account.</div></div></div>';
 
-  h += '<div class="step"><div class="n">3</div><div><b>Deposit at least ' + eur(CFG.minDeposit) + '</b><div class="mini">SOL, USDT or BTC to the deposit wallet.</div></div></div>';
+  h += '<div class="step"><div class="n">3</div><div><b>Deposit at least ' + eur(CFG.minDeposit) + '</b><div class="mini">SOL, USDT or BTC. Every ' + eur(CFG.botCapital) + ' unlocks one bot.</div></div></div>';
 
-  h += '<div class="step"><div class="n">4</div><div><b>Activate a bot</b><div class="mini">Capital moves from balance into the bot.</div></div></div>';
+  h += '<div class="step"><div class="n">4</div><div><b>Activate a bot</b><div class="mini">' + eur(CFG.botCapital) + ' moves from your balance into the bot.</div></div></div>';
 
   h += '<div class="step"><div class="n">5</div><div><b>Connect wallet and cash out</b><div class="mini">Payouts go straight to your own wallet.</div></div></div>';
 
@@ -1150,13 +1010,7 @@ function vLanding() {
 
   h += revs.map(function (r) {
 
-    return '<div class="rev"><div class="row"><div style="display:flex;gap:10px;align-items:center">' +
-
-      '<div class="av" style="width:36px;height:36px;font-size:12.5px">' + r[1] + '</div>' +
-
-      '<div><b style="font-size:13.5px">' + r[0] + '</b><div class="mini">' + r[3] + ' days ago - verified</div></div></div>' +
-
-      '<div class="stars">' + stars(r[2]) + '</div></div><p>' + r[4] + '</p></div>';
+    return '<div class="rev"><div class="row"><div style="display:flex;gap:10px;align-items:center"><div class="av" style="width:36px;height:36px;font-size:12.5px">' + r[1] + '</div><div><b style="font-size:13.5px">' + r[0] + '</b><div class="mini">' + r[3] + ' days ago - verified</div></div></div><div class="stars">' + stars(r[2]) + '</div></div><p>' + r[4] + '</p></div>';
 
   }).join('');
 
@@ -1164,25 +1018,21 @@ function vLanding() {
 
   h += '<div class="wrap">';
 
-  h += '<div class="card"><h3>Create an account</h3>';
+  h += '<div class="card"><h3>Get started</h3><p class="mini">Free. Just your email. Every ' + eur(CFG.botCapital) + ' deposited unlocks one bot, max ' + eur(CFG.dailyCapPerBot) + ' profit per bot per 24h.</p>';
 
-  h += '<p class="mini">Free. Email confirmation required, bot activation from ' + eur(CFG.minDeposit) + '.</p>';
+  h += '<form data-form="start" class="mt">';
 
-  h += '<form data-form="register" class="mt">';
+  h += '<div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" inputmode="email" autocomplete="email" required></div>';
 
-  h += '<div class="field"><label>Name</label><input name="name" placeholder="Full name" required></div>';
-
-  h += '<div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" inputmode="email" required></div>';
-
-  h += '<div class="field"><label>Password</label><input name="pass" type="password" placeholder="Min. 6 characters" minlength="6" required></div>';
-
-  h += '<button class="btn primary" type="submit">Create account</button></form>';
+  h += '<button class="btn primary" type="submit">Continue</button></form>';
 
   h += '<div class="center mini mt">Already have an account? <a href="#/login" class="green">Log in</a></div></div>';
 
   h += '<div class="sec"><div class="eyebrow">FAQ</div><h2>Frequently asked questions</h2><div class="mt">';
 
-  h += '<details><summary>Why do I need to confirm my email?</summary><p>To protect your account and to make sure withdrawal confirmations reach you. Until confirmed you will see Action verification required.</p></details>';
+  h += '<details><summary>Why do I need to confirm my email?</summary><p>Your email is your login. We send a 6-digit code, so there is no password to remember and nobody can log in without access to your inbox.</p></details>';
+
+  h += '<details><summary>How many bots can I unlock?</summary><p>Every ' + eur(CFG.botCapital) + ' you deposit unlocks one more bot, up to 6 bots. Each bot trades ' + eur(CFG.botCapital) + ' and can earn up to ' + eur(CFG.dailyCapPerBot) + ' per 24 hours.</p></details>';
 
   h += '<details><summary>Why connect a wallet?</summary><p>Payouts go straight to your own wallet. The payout address field stays locked until your wallet is connected.</p></details>';
 
@@ -1192,7 +1042,7 @@ function vLanding() {
 
   h += '</div></div>';
 
-  h += '<div class="hr"></div><div class="mini center">NeuroTrade AI - Demo platform</div>';
+  h += '<div class="hr"></div><div class="mini center">NeuroTrade AI</div>';
 
   h += '</div>';
 
@@ -1202,39 +1052,21 @@ function vLanding() {
 
 
 
-function stars(n) {
+function vAuth() {
 
-  var a = '', i;
+  var h = '<div class="wrap"><h1>Log in or sign up</h1>';
 
-  for (i = 0; i < 5; i++) { a += (i < n ? '&#9733;' : '&#9734;'); }
+  h += '<p class="sub">Enter your email and we send you a 6-digit code. No password needed.</p>';
 
-  return a;
+  h += '<div class="card mt2"><form data-form="start">';
 
-}
+  h += '<div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" inputmode="email" autocomplete="email" required></div>';
 
+  h += '<button class="btn primary" type="submit">Continue</button></form>';
 
+  h += '<div class="center mini mt">New here? Same form - your account is created automatically.</div></div>';
 
-function vAuth(mode) {
-
-  var login = mode === 'login';
-
-  var h = '<div class="wrap"><h1>' + (login ? 'Welcome back' : 'Create account') + '</h1>';
-
-  h += '<p class="sub">' + (login ? 'Log in to manage your bots, balance and payouts.' : 'Create an account, then confirm the 6-digit code shown on the next screen.') + '</p>';
-
-  h += '<div class="card mt2"><form data-form="' + (login ? 'login' : 'register') + '">';
-
-  if (!login) { h += '<div class="field"><label>Name</label><input name="name" placeholder="Full name" required></div>'; }
-
-  h += '<div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" inputmode="email" required></div>';
-
-  h += '<div class="field"><label>Password</label><input name="pass" type="password" placeholder="Min. 6 characters" required></div>';
-
-  h += '<button class="btn primary" type="submit">' + (login ? 'Log in' : 'Create account') + '</button></form>';
-
-  h += '<div class="center mini mt">' + (login ? 'No account yet? <a href="#/register" class="green">Sign up</a>' : 'Already have an account? <a href="#/login" class="green">Log in</a>') + '</div></div>';
-
-  h += '<div class="banner mt"><div><b>Email confirmation required</b><span>New accounts must confirm their email before depositing or withdrawing.</span></div></div></div>';
+  h += '<div class="banner mt"><div><b>Email is your login</b><span>Confirm the code to unlock deposits, bots and withdrawals.</span></div></div></div>';
 
   return h;
 
@@ -1246,43 +1078,45 @@ function vVerify() {
 
   var u = me();
 
+  if (!u) { return vAuth(); }
+
   if (isVerified(u)) {
 
-    return '<div class="wrap"><h1>Email confirmed</h1>' +
-
-      '<div class="banner"><div><b>Your email is verified</b><span>' + esc(u.email) + ' is confirmed.</span></div></div>' +
-
-      '<a class="btn primary" href="#/deposit">Continue to deposit</a>' +
-
-      '<div class="mt2"><a class="btn ghost" href="#/dashboard">Go to dashboard</a></div></div>';
+    return '<div class="wrap"><h1>Email confirmed</h1><div class="banner"><div><b>Your email is verified</b><span>' + esc(u.email) + ' is confirmed.</span></div></div><a class="btn primary" href="#/deposit">Continue to deposit</a><div class="mt2"><a class="btn ghost" href="#/dashboard">Go to dashboard</a></div></div>';
 
   }
 
-  var code = (u.code || '000000').split('');
+  var code = (u.code || '------').split('');
 
-  var h = '<div class="wrap"><span class="badge amber">&#9679; Action verification required</span>';
+  var showCode = CFG.showCode === 'always' || (CFG.showCode === 'auto' && u.codeSentOk === false);
 
-  h += '<h1 class="mt">Confirm your email</h1>';
+  var h = '<div class="wrap"><span class="badge amber">&#9679; Confirm your email</span>';
 
-  h += '<p class="sub">A 6-digit code was sent to <b class="green">' + esc(u.email) + '</b>. Enter it below.</p>';
+  h += '<h1 class="mt">Check your inbox</h1>';
 
-  h += '<div class="card mt"><div class="eyebrow">Demo inbox</div>';
+  h += '<p class="sub">We sent a 6-digit code to <b class="green">' + esc(u.email) + '</b>. Enter it below to log in.</p>';
 
-  h += '<div class="row mt"><div><b>Verify your NeuroTrade account</b><div class="mini">to ' + esc(u.email) + '</div></div><span class="pill a">1 new</span></div>';
+  if (showCode) {
 
-  h += '<div class="codebox">' + code.map(function (d) { return '<div class="d">' + d + '</div>'; }).join('') + '</div>';
+    h += '<div class="card mt"><div class="row"><div><b>Your code</b><div class="mini">' + (u.codeSentOk === false ? 'Sending failed - use this code' : 'Shown for reference') + '</div></div><span class="pill a">' + (u.codeSentOk === false ? 'not delivered' : 'on screen') + '</span></div>';
 
-  h += '<div class="mini center">Code expires in 15 minutes - <span class="green" data-action="resend">resend code</span></div></div>';
+    h += '<div class="codebox">' + code.map(function (d) { return '<div class="d">' + d + '</div>'; }).join('') + '</div>';
+
+    h += '<div class="mini center">Expires in 15 minutes</div></div>';
+
+  }
 
   h += '<form data-form="verify" class="mt"><div class="field"><label>6-digit code</label>';
 
   h += '<input name="code" inputmode="numeric" maxlength="6" placeholder="000000" style="text-align:center;font-size:20px;font-weight:800" required></div>';
 
-  h += '<button class="btn primary" type="submit">Confirm email</button></form>';
+  h += '<button class="btn primary" type="submit">Confirm and log in</button></form>';
 
-  h += '<div class="banner blue mt2"><div><b>Until confirmed</b><span>Your status shows Action verification required and deposits are locked.</span></div></div>';
+  h += '<div class="mini center mt">Did not get it? Check spam, or <span class="green" style="font-weight:700;cursor:pointer" data-action="resend">send a new code</span></div>';
 
-  h += '<div class="mini center mt2">Wrong address? <span class="green" data-action="logout">Log out</span></div></div>';
+  h += '<div class="banner blue mt2"><div><b>Until confirmed</b><span>Deposits, bots and withdrawals stay locked.</span></div></div>';
+
+  h += '<div class="mini center mt2">Wrong address? <span class="green" style="cursor:pointer" data-action="logout">Log out</span></div></div>';
 
   return h;
 
@@ -1292,9 +1126,7 @@ function vVerify() {
 
 function txRow(t) {
 
-  var dep = t.type === 'deposit';
-
-  var st = 'a';
+  var dep = t.type === 'deposit', st = 'a';
 
   if (t.status === 'credited' || t.status === 'paid') { st = 'g'; }
 
@@ -1308,11 +1140,7 @@ function txRow(t) {
 
   if (t.status === 'rejected') { label = 'Rejected'; }
 
-  return '<div class="item"><div class="av">' + (dep ? 'IN' : 'OUT') + '</div>' +
-
-    '<div class="t"><b>' + (dep ? 'Deposit' : 'Withdrawal') + '</b><span>' + dt(t.ts) + ' - ' + esc(t.method || 'wallet') + '</span></div>' +
-
-    '<div style="text-align:right"><div style="font-weight:800">' + (dep ? '+' : '-') + eur2(t.amount) + '</div><span class="pill ' + st + '">' + label + '</span></div></div>';
+  return '<div class="item"><div class="av">' + (dep ? 'IN' : 'OUT') + '</div><div class="t"><b>' + (dep ? 'Deposit' : 'Withdrawal') + '</b><span>' + dt(t.ts) + ' - ' + esc(t.method || 'wallet') + '</span></div><div style="text-align:right"><div style="font-weight:800">' + (dep ? '+' : '-') + eur2(t.amount) + '</div><span class="pill ' + st + '">' + label + '</span></div></div>';
 
 }
 
@@ -1320,23 +1148,21 @@ function txRow(t) {
 
 function vDashboard() {
 
-  var u = me();
+  var u = me(); ensure(u);
 
-  ensure(u);
-
-  var active = u.bots.length;
-
-  var unrl = 0, i;
+  var active = u.bots.length, unrl = 0, i;
 
   for (i = 0; i < u.pos.length; i++) { unrl += u.pos[i].pnl; }
 
-  var roi = u.balance > 0 ? (unrl / u.balance * 100) : 0;
+  var roi = (u.allocated || 0) > 0 ? (unrl / u.allocated * 100) : 0;
+
+  var un = unlockedBots(u);
 
   var h = '<div class="wrap">';
 
   h += '<div class="row"><h1 style="margin:0">Dashboard</h1><span class="pill ' + (isActive(u) ? 'g' : (isVerified(u) ? 'b' : 'a')) + '">' + statusOf(u) + '</span></div>';
 
-  h += '<p class="sub mt">Hi ' + esc(u.name.split(' ')[0]) + ', ' + (isVerified(u) ? 'your email is confirmed.' : 'your account needs email confirmation.') + '</p>';
+  h += '<p class="sub mt">Hi ' + esc((u.name || '').split(' ')[0] || 'there') + ', ' + (isVerified(u) ? 'your email is confirmed.' : 'confirm your email to start.') + '</p>';
 
   h += actionBanner(u);
 
@@ -1344,27 +1170,19 @@ function vDashboard() {
 
   h += '<div class="stat"><div class="lbl">Balance</div><div class="val" id="dash-bal">' + eur2(u.balance) + '</div><div class="hint">Available to trade</div></div>';
 
-  h += '<div class="stat"><div class="lbl">In bots</div><div class="val blue">' + eur2(u.allocated || 0) + '</div><div class="hint">Allocated capital</div></div>';
+  h += '<div class="stat"><div class="lbl">In bots</div><div class="val blue" id="dash-alloc">' + eur2(u.allocated || 0) + '</div><div class="hint">Allocated capital</div></div>';
 
   h += '<div class="stat"><div class="lbl">Unrealized PnL</div><div class="val ' + (unrl >= 0 ? 'g' : '') + '" id="dash-pnl">' + (unrl >= 0 ? '+' : '') + eur2(unrl) + '</div><div class="hint">Live positions</div></div>';
 
-  h += '<div class="stat"><div class="lbl">ROI</div><div class="val ' + (roi >= 0 ? 'g' : '') + '">' + (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%</div><div class="hint">Since start</div></div>';
+  h += '<div class="stat"><div class="lbl">ROI</div><div class="val ' + (roi >= 0 ? 'g' : '') + '">' + (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%</div><div class="hint">On allocated capital</div></div>';
 
   h += '</div>';
 
   h += '<div class="card mt2"><div class="row"><h3>Wallet</h3><span class="pill ' + (u.wallet.connected ? 'g' : 'a') + '">' + (u.wallet.connected ? 'connected' : 'not connected') + '</span></div>';
 
-  if (u.wallet.connected) {
+  if (u.wallet.connected) { h += '<div class="addr mt"><code>' + esc(u.wallet.address) + '</code></div><div class="mini mt">Payouts are sent to this wallet.</div>'; }
 
-    h += '<div class="addr mt"><code>' + esc(u.wallet.address) + '</code></div><div class="mini mt">Payouts are sent to this wallet.</div>';
-
-  } else {
-
-    h += '<p class="mt">Connect your wallet to enable cash outs. Your payout goes straight to your own wallet.</p>';
-
-    h += '<button class="btn primary" data-action="connect-wallet">Connect wallet</button>';
-
-  }
+  else { h += '<p class="mt">Connect your wallet to enable cash outs. Your payout goes straight to your own wallet.</p><button class="btn primary" data-action="connect-wallet">Connect wallet</button>'; }
 
   h += '</div>';
 
@@ -1374,21 +1192,11 @@ function vDashboard() {
 
     h += '<table class="tbl mt"><thead><tr><th>Pair</th><th>Size</th><th>Alloc</th><th>PnL</th></tr></thead><tbody>';
 
-    h += u.pos.map(function (p) {
-
-      return '<tr><td>' + esc(p.pair) + '</td><td>' + p.size.toFixed(2) + '</td><td>' + eur(p.alloc || 0) + '</td>' +
-
-        '<td><div class="green" style="font-weight:800">+$' + p.pnl.toFixed(0) + '</div><div class="mini green">+' + p.pct.toFixed(2) + '%</div></td></tr>';
-
-    }).join('');
+    h += u.pos.map(function (p) { return '<tr><td>' + esc(p.pair) + '</td><td>' + p.size.toFixed(2) + '</td><td>' + eur(p.alloc || 0) + '</td><td><div class="green" style="font-weight:800">+' + eur(p.pnl) + '</div><div class="mini green">+' + p.pct.toFixed(2) + '%</div></td></tr>'; }).join('');
 
     h += '</tbody></table>';
 
-  } else {
-
-    h += '<p class="mt">No open positions yet. Activate a bot and capital moves from your balance into it.</p><a class="btn primary" href="#/bots">View bots</a>';
-
-  }
+  } else { h += '<p class="mt">No open positions yet. Activate a bot and ' + eur(CFG.botCapital) + ' moves from your balance into it.</p><a class="btn primary" href="#/bots">View bots</a>'; }
 
   h += '</div>';
 
@@ -1402,15 +1210,15 @@ function vDashboard() {
 
   h += '<div class="g2 mt"><a class="btn sm" href="#/deposit">Deposit</a><a class="btn sm" href="#/withdraw">Withdraw</a></div></div>';
 
-  h += '<div class="card mt2"><div class="row"><div><div class="eyebrow">Bot engine</div><b>Status</b></div><span class="badge">' + (CFG.botEngine ? 'online' : 'paused') + '</span></div>';
-
-  h += '<div class="hr"></div>';
+  h += '<div class="card mt2"><div class="row"><div><div class="eyebrow">Bot engine</div><b>Status</b></div><span class="badge">' + (CFG.botEngine ? 'online' : 'paused') + '</span></div><div class="hr"></div>';
 
   h += '<div class="row mini"><span>Uptime</span><span class="green">' + STATS.uptime + '%</span></div>';
 
-  h += '<div class="row mini mt"><span>All users profit 24h</span><span class="green" id="dash-profit">' + eur(STATS.profit) + '</span></div>';
+  h += '<div class="row mini mt"><span>Bots unlocked</span><span class="green">' + un + ' of ' + BOTS.length + '</span></div>';
 
-  h += '<div class="row mini mt"><span>Capital per bot activation</span><span class="green">' + CFG.allocPct + '% of balance</span></div></div>';
+  h += '<div class="row mini mt"><span>Capital per bot</span><span class="green">' + eur(CFG.botCapital) + '</span></div>';
+
+  h += '<div class="row mini mt"><span>Max profit per bot / 24h</span><span class="green">' + eur(CFG.dailyCapPerBot) + '</span></div></div>';
 
   h += '</div>';
 
@@ -1422,31 +1230,33 @@ function vDashboard() {
 
 function vBots() {
 
-  var u = me();
+  var u = me(); ensure(u);
 
-  ensure(u);
+  var un = unlockedBots(u);
 
   var h = '<div class="wrap"><h1>AI Bots</h1>';
 
-  h += '<p class="sub">Balance ' + eur2(u.balance) + ' - in bots ' + eur2(u.allocated || 0) + ' - active ' + u.bots.length + '/' + BOTS.length + '</p>';
+  h += '<p class="sub">Balance ' + eur2(u.balance) + ' - in bots ' + eur2(u.allocated || 0) + ' - ' + un + ' of ' + BOTS.length + ' unlocked</p>';
 
-  if (!isVerified(u)) {
+  if (!isVerified(u)) { h += '<div class="banner warn"><div><b>Confirm your email</b><span>Enter your 6-digit code before activating a bot.</span></div></div><a class="btn amber mb" href="#/verify">Enter code</a>'; }
 
-    h += '<div class="banner warn"><div><b>Action verification required</b><span>Confirm your email before activating a bot.</span></div></div>';
+  if (!isActive(u)) { h += '<div class="banner warn"><div><b>Deposit at least ' + eur(CFG.minDeposit) + '</b><span>Activation unlocks once your deposit clears.</span></div></div><a class="btn primary mb" href="#/deposit">Deposit</a>'; }
 
-    h += '<a class="btn amber mb" href="#/verify">Verify email</a>';
+  h += '<div class="banner blue"><div><b>How unlocking works</b><span>Every ' + eur(CFG.botCapital) + ' you deposit unlocks one more bot. Activating moves ' + eur(CFG.botCapital) + ' into that bot. Each bot caps at ' + eur(CFG.dailyCapPerBot) + ' profit per 24 hours.</span></div></div>';
+
+  h += '<div class="card mb"><div class="row"><div><b>Bots unlocked</b><div class="mini">' + un + ' of ' + BOTS.length + '</div></div><span class="pill ' + (un ? 'g' : 'a') + '">' + un + '/' + BOTS.length + '</span></div>';
+
+  if (un < BOTS.length) {
+
+    var need = (un + 1) * CFG.botCapital - (u.deposited || 0);
+
+    if (need < 1) { need = CFG.botCapital; }
+
+    h += '<div class="mini mt">Deposit ' + eur(need) + ' more to unlock the next bot.</div>';
 
   }
 
-  if (!isActive(u)) {
-
-    h += '<div class="banner warn"><div><b>Deposit at least ' + eur(CFG.minDeposit) + '</b><span>Activation unlocks once your deposit clears.</span></div></div>';
-
-    h += '<a class="btn primary mb" href="#/deposit">Deposit</a>';
-
-  }
-
-  h += '<div class="banner blue"><div><b>How activation works</b><span>Activating a bot moves ' + CFG.allocPct + '% of your balance into that bot. Stopping a bot returns the capital plus its PnL to your balance.</span></div></div>';
+  h += '</div>';
 
   h += BOTS.map(function (b) {
 
@@ -1454,19 +1264,21 @@ function vBots() {
 
     var p = u.pos.filter(function (x) { return x.bot === b.id; })[0];
 
-    var s = '<div class="bot ' + (on ? 'on' : '') + '">';
+    var locked = !on && u.bots.length >= un;
+
+    var s = '<div class="bot ' + (on ? 'on' : '') + (locked ? ' locked' : '') + '">';
 
     s += '<div class="hd"><div class="av">' + b.name.slice(0, 2).toUpperCase() + '</div>';
 
     s += '<div style="flex:1;min-width:0"><div class="nm">' + b.name + '</div><div class="ds">' + b.tag + ' - risk ' + b.risk + '</div></div>';
 
-    s += spark(b.seed, true) + '</div>';
+    s += '<span class="pill ' + (on ? 'g' : (locked ? '' : 'a')) + '">' + (on ? 'active' : (locked ? 'locked' : 'ready')) + '</span></div>';
 
     s += '<p style="margin:11px 0 0;font-size:13px">' + b.ds + '</p>';
 
     s += '<div class="metrics">';
 
-    s += '<div class="metric"><div class="k">ROI 24h</div><div class="v green">+' + b.roi + '%</div></div>';
+    s += '<div class="metric"><div class="k">Max 24h</div><div class="v green">' + eur(CFG.dailyCapPerBot) + '</div></div>';
 
     s += '<div class="metric"><div class="k">Win rate</div><div class="v">' + b.wr + '%</div></div>';
 
@@ -1476,17 +1288,25 @@ function vBots() {
 
     if (on) {
 
+      s += '<div class="bar"><i data-live-bar="' + b.id + '" style="width:' + ((p && p.prog ? p.prog : 0) * 100).toFixed(1) + '%"></i></div>';
+
       s += '<div class="hr"></div>';
 
-      s += '<div class="row mini"><span>Allocated capital</span><b class="blue">' + eur(p ? p.alloc : 0) + '</b></div>';
+      s += '<div class="row mini"><span>Capital in bot</span><b class="blue">' + eur(p ? p.alloc : 0) + '</b></div>';
 
-      s += '<div class="row mini mt"><span>Live PnL</span><span class="green" style="font-weight:800" data-live-pnl="' + b.id + '">+$' + (p ? p.pnl.toFixed(0) : '0') + '</span></div>';
+      s += '<div class="row mini mt"><span>Live PnL</span><span class="green" style="font-weight:800" data-live-pnl="' + b.id + '">+' + eur(p ? p.pnl : 0) + '</span></div>';
+
+      s += '<div class="row mini mt"><span>Progress to ' + eur(CFG.dailyCapPerBot) + '</span><span class="mini" data-live-pct="' + b.id + '">+' + (p ? p.pct.toFixed(1) : '0') + '%</span></div>';
+
+    } else if (locked) {
+
+      s += '<div class="mini mt">Locked - deposit ' + eur(CFG.botCapital) + ' to unlock this bot.</div>';
 
     }
 
-    s += '<div class="row mt"><span class="mini">Min. capital ' + eur(b.min) + '</span>';
+    s += '<div class="row mt"><span class="mini">Capital ' + eur(CFG.botCapital) + '</span>';
 
-    s += '<button class="btn sm ' + (on ? 'danger' : 'primary') + '" data-action="toggle-bot" data-bot="' + b.id + '">' + (on ? 'Stop and return' : 'Activate') + '</button></div>';
+    s += '<button class="btn sm ' + (on ? 'danger' : (locked ? '' : 'primary')) + '" data-action="toggle-bot" data-bot="' + b.id + '">' + (on ? 'Stop and return' : (locked ? 'Unlock' : 'Activate')) + '</button></div>';
 
     s += '</div>';
 
@@ -1494,7 +1314,7 @@ function vBots() {
 
   }).join('');
 
-  h += '<div class="mini center mt2">Figures are realistic demo data and not a guarantee.</div></div>';
+  h += '<div class="mini center mt2">Figures are not a guarantee.</div></div>';
 
   return h;
 
@@ -1510,7 +1330,7 @@ function vDeposit() {
 
   var h = '<div class="wrap"><h1>Deposit</h1>';
 
-  h += '<p class="sub">Deposit at least ' + eur(CFG.minDeposit) + ' to activate your account. Your balance is credited the moment you report the deposit.</p>';
+  h += '<p class="sub">Deposit at least ' + eur(CFG.minDeposit) + '. Every ' + eur(CFG.botCapital) + ' unlocks one bot. Your balance is credited the moment you report the deposit.</p>';
 
   h += actionBanner(u);
 
@@ -1526,11 +1346,7 @@ function vDeposit() {
 
   h += '<h2 class="mt">Step 1 - Choose a network</h2>';
 
-  h += '<div class="tabs mt mb" id="depTabs">';
-
-  h += '<div class="tab on" data-method="Solana">Solana</div><div class="tab" data-method="USDT (TRC20)">USDT</div><div class="tab" data-method="Bitcoin">Bitcoin</div>';
-
-  h += '</div>';
+  h += '<div class="tabs mt mb" id="depTabs"><div class="tab on" data-method="Solana">Solana</div><div class="tab" data-method="USDT (TRC20)">USDT</div><div class="tab" data-method="Bitcoin">Bitcoin</div></div>';
 
   h += '<div class="field"><label>Wallet address - <span id="mLabel">Solana</span></label>';
 
@@ -1548,7 +1364,7 @@ function vDeposit() {
 
   h += '<input name="amount" type="number" inputmode="decimal" placeholder="' + CFG.minDeposit + '" min="' + CFG.minDeposit + '" required>';
 
-  h += '<div class="chips">' + [CFG.minDeposit, 250, 500, 1000, 2500].map(function (v) { return '<div class="chip" data-amt="' + v + '">' + eur(v) + '</div>'; }).join('') + '</div></div>';
+  h += '<div class="chips">' + [CFG.minDeposit, 200, 300, 600, 1000].map(function (v) { return '<div class="chip" data-amt="' + v + '">' + eur(v) + '</div>'; }).join('') + '</div></div>';
 
   h += '<div class="field"><label>Transaction or reference (optional)</label><input name="ref" placeholder="Transaction id or your name"></div>';
 
@@ -1572,9 +1388,7 @@ function vDeposit() {
 
 function vWithdraw() {
 
-  var u = me();
-
-  ensure(u);
+  var u = me(); ensure(u);
 
   var txs = userTx().filter(function (t) { return t.type === 'withdraw'; });
 
@@ -1588,23 +1402,9 @@ function vWithdraw() {
 
   h += '<div class="card"><div class="row"><h3 style="margin:0">Payout wallet</h3><span class="pill ' + (wc ? 'g' : 'a') + '">' + (wc ? 'connected' : 'not connected') + '</span></div>';
 
-  if (wc) {
+  if (wc) { h += '<div class="addr mt"><code>' + esc(u.wallet.address) + '</code><button class="btn sm" data-action="copy" data-copy="' + esc(u.wallet.address) + '" style="flex:none">Copy</button></div><div class="mini mt">Your payout goes straight to this wallet.</div>'; }
 
-    h += '<div class="addr mt"><code>' + esc(u.wallet.address) + '</code>';
-
-    h += '<button class="btn sm" data-action="copy" data-copy="' + esc(u.wallet.address) + '" style="flex:none">Copy</button></div>';
-
-    h += '<div class="mini mt">Your payout goes straight to this wallet.</div>';
-
-  } else {
-
-    h += '<p class="mt">You must connect your wallet before you can cash out. That is where the money is sent to.</p>';
-
-    h += '<button class="btn primary" data-action="connect-wallet">Connect wallet</button>';
-
-    h += '<div class="mini mt">Opens ' + esc(CFG.connectUrl) + '</div>';
-
-  }
+  else { h += '<p class="mt">You must connect your wallet before you can cash out. That is where the money is sent to.</p><button class="btn primary" data-action="connect-wallet">Connect wallet</button><div class="mini mt">Opens ' + esc(CFG.connectUrl) + '</div>'; }
 
   h += '</div>';
 
@@ -1626,9 +1426,7 @@ function vWithdraw() {
 
   h += '<input name="amount" type="number" inputmode="decimal" placeholder="' + CFG.minWithdraw + '" min="' + CFG.minWithdraw + '" required>';
 
-  h += '<div class="chips"><div class="chip" data-pct="25">25%</div><div class="chip" data-pct="50">50%</div><div class="chip" data-pct="100">MAX</div>';
-
-  h += '<div class="chip" data-amt="100">' + eur(100) + '</div><div class="chip" data-amt="500">' + eur(500) + '</div></div></div>';
+  h += '<div class="chips"><div class="chip" data-pct="25">25%</div><div class="chip" data-pct="50">50%</div><div class="chip" data-pct="100">MAX</div><div class="chip" data-amt="100">' + eur(100) + '</div><div class="chip" data-amt="500">' + eur(500) + '</div></div></div>';
 
   h += '<div class="field"><label>Payout address' + (wc ? '' : ' - locked') + '</label>';
 
@@ -1656,23 +1454,21 @@ function vWithdraw() {
 
 function vAccount() {
 
-  var u = me();
-
-  ensure(u);
+  var u = me(); ensure(u);
 
   var h = '<div class="wrap"><h1>My account</h1>';
 
   h += '<div class="card mt"><div class="row"><div style="display:flex;gap:12px;align-items:center;min-width:0">';
 
-  h += '<div class="av" style="width:50px;height:50px;font-size:17px">' + u.name.slice(0, 2).toUpperCase() + '</div>';
+  h += '<div class="av" style="width:50px;height:50px;font-size:17px">' + (u.name || u.email).slice(0, 2).toUpperCase() + '</div>';
 
-  h += '<div style="min-width:0"><b style="font-size:16px">' + esc(u.name) + '</b><div class="mini">' + esc(u.email) + '</div></div></div>';
+  h += '<div style="min-width:0"><b style="font-size:16px">' + esc(u.name || u.email) + '</b><div class="mini">' + esc(u.email) + '</div></div></div>';
 
   h += '<span class="pill ' + (isActive(u) ? 'g' : (isVerified(u) ? 'b' : 'a')) + '">' + statusOf(u) + '</span></div>';
 
   h += '<div class="hr"></div>';
 
-  h += '<div class="row"><span class="mini">Email status</span><b class="' + (isVerified(u) ? 'green' : 'amber') + '">' + (isVerified(u) ? 'confirmed' : 'action verification required') + '</b></div>';
+  h += '<div class="row"><span class="mini">Email status</span><b class="' + (isVerified(u) ? 'green' : 'amber') + '">' + (isVerified(u) ? 'confirmed' : 'not confirmed') + '</b></div>';
 
   h += '<div class="row mt"><span class="mini">Balance</span><b>' + eur2(u.balance) + '</b></div>';
 
@@ -1680,9 +1476,9 @@ function vAccount() {
 
   h += '<div class="row mt"><span class="mini">Total deposited</span><b>' + eur(u.deposited || 0) + '</b></div>';
 
-  h += '<div class="row mt"><span class="mini">Wallet</span><b class="' + (u.wallet.connected ? 'green' : 'amber') + '">' + (u.wallet.connected ? 'connected' : 'not connected') + '</b></div>';
+  h += '<div class="row mt"><span class="mini">Bots unlocked</span><b>' + unlockedBots(u) + ' of ' + BOTS.length + '</b></div>';
 
-  h += '<div class="row mt"><span class="mini">Active bots</span><b>' + u.bots.length + '</b></div>';
+  h += '<div class="row mt"><span class="mini">Wallet</span><b class="' + (u.wallet.connected ? 'green' : 'amber') + '">' + (u.wallet.connected ? 'connected' : 'not connected') + '</b></div>';
 
   h += '<div class="row mt"><span class="mini">Member since</span><b>' + dd(u.created) + '</b></div></div>';
 
@@ -1694,9 +1490,9 @@ function vAccount() {
 
   h += '<div class="hr"></div><button class="btn ghost" data-action="logout">Log out</button>';
 
-  h += '<button class="btn ghost" style="margin-top:10px" data-action="reset">Reset demo data</button>';
+  h += '<button class="btn ghost" style="margin-top:10px" data-action="reset">Reset data</button>';
 
-  h += '<div class="mini center mt2">NeuroTrade AI v3.1</div></div>';
+  h += '<div class="mini center mt2">NeuroTrade AI v4.0</div></div>';
 
   return h;
 
@@ -1708,15 +1504,15 @@ function vAdminLogin() {
 
   var h = '<div class="wrap"><span class="badge">&#9679; Admin</span><h1 class="mt">Admin panel</h1>';
 
-  h += '<p class="sub">Enter your admin code to manage users, balances, payouts and settings.</p>';
+  h += '<p class="sub">Enter the secret code to manage users, balances, payouts and settings.</p>';
 
   h += '<div class="card mt2"><form data-form="adminlogin">';
 
-  h += '<div class="field"><label>Admin code</label><input name="code" type="password" required></div>';
+  h += '<div class="field"><label>Secret code</label><input name="code" type="password" inputmode="numeric" maxlength="6" placeholder="000000" style="text-align:center;font-size:20px;font-weight:800;letter-spacing:6px" required></div>';
 
-  h += '<button class="btn primary" type="submit">Enter panel</button></form>';
+  h += '<button class="btn primary" type="submit">Enter panel</button></form></div>';
 
-  h += '<div class="mini mt">Default code: <b class="green">' + DEFAULTS.adminCode + '</b></div></div></div>';
+  h += '<div class="mini center mt2"><a class="green" href="#/">Back to site</a></div></div>';
 
   return h;
 
@@ -1728,15 +1524,7 @@ function adminStats() {
 
   var dep = 0, bal = 0, alloc = 0, i;
 
-  for (i = 0; i < USERS.length; i++) {
-
-    dep += (USERS[i].deposited || 0);
-
-    bal += (USERS[i].balance || 0);
-
-    alloc += (USERS[i].allocated || 0);
-
-  }
+  for (i = 0; i < USERS.length; i++) { dep += (USERS[i].deposited || 0); bal += (USERS[i].balance || 0); alloc += (USERS[i].allocated || 0); }
 
   var pend = TX.filter(function (t) { return t.type === 'withdraw' && t.status === 'pending'; });
 
@@ -1752,19 +1540,13 @@ function adminStats() {
 
 function adminTxRow(t) {
 
-  var dep = t.type === 'deposit';
-
-  var st = 'a';
+  var dep = t.type === 'deposit', st = 'a';
 
   if (t.status === 'credited' || t.status === 'paid') { st = 'g'; }
 
   if (t.status === 'rejected') { st = 'r'; }
 
-  return '<div class="item"><div class="av">' + (dep ? 'IN' : 'OUT') + '</div>' +
-
-    '<div class="t"><b>' + (dep ? 'Deposit' : 'Payout') + ' ' + eur2(t.amount) + '</b><span>' + esc(t.email) + '</span></div>' +
-
-    '<span class="pill ' + st + '">' + esc(t.status) + '</span></div>';
+  return '<div class="item"><div class="av">' + (dep ? 'IN' : 'OUT') + '</div><div class="t"><b>' + (dep ? 'Deposit' : 'Payout') + ' ' + eur2(t.amount) + '</b><span>' + esc(t.email) + '</span></div><span class="pill ' + st + '">' + esc(t.status) + '</span></div>';
 
 }
 
@@ -1776,25 +1558,9 @@ function vAdmin() {
 
   var st = adminStats();
 
-  var tabs = [
+  var tabs = [['overview', 'Overview'], ['users', 'Users'], ['withdrawals', 'Payouts' + (st.pend.length ? ' (' + st.pend.length + ')' : '')], ['deposits', 'Deposits'], ['bots', 'Bots'], ['settings', 'Settings']];
 
-    ['overview', 'Overview'],
-
-    ['users', 'Users'],
-
-    ['withdrawals', 'Payouts' + (st.pend.length ? ' (' + st.pend.length + ')' : '')],
-
-    ['deposits', 'Deposits'],
-
-    ['bots', 'Bots'],
-
-    ['settings', 'Settings']
-
-  ];
-
-  var body = '';
-
-  var i;
+  var body = '', i;
 
 
 
@@ -1824,11 +1590,11 @@ function vAdmin() {
 
     body += '<div class="card mt2"><div class="row"><h3 style="margin:0">Bot engine</h3><span class="pill ' + (CFG.botEngine ? 'g' : 'r') + '">' + (CFG.botEngine ? 'running' : 'paused') + '</span></div>';
 
-    body += '<div class="row mini mt"><span>Capital per activation</span><b>' + CFG.allocPct + '% of balance</b></div>';
+    body += '<div class="row mini mt"><span>Capital per bot</span><b>' + eur(CFG.botCapital) + '</b></div>';
+
+    body += '<div class="row mini mt"><span>Max profit per bot / 24h</span><b>' + eur(CFG.dailyCapPerBot) + '</b></div>';
 
     body += '<div class="row mini mt"><span>Min. deposit</span><b>' + eur(CFG.minDeposit) + '</b></div>';
-
-    body += '<div class="row mini mt"><span>Min. withdrawal</span><b>' + eur(CFG.minWithdraw) + '</b></div>';
 
     body += '<button class="btn sm mt" data-action="admin-tab" data-tab="settings">Open settings</button></div>';
 
@@ -1846,17 +1612,13 @@ function vAdmin() {
 
   if (ADMIN_TAB === 'users') {
 
-    if (!USERS.length) { body = '<p class="sub">No accounts yet. Register one from the landing page.</p>'; }
+    if (!USERS.length) { body = '<p class="sub">No accounts yet.</p>'; }
 
     for (i = USERS.length - 1; i >= 0; i--) {
 
       var u = USERS[i];
 
-      body += '<div class="card mb"><div class="row"><div style="min-width:0"><b style="font-size:14.5px">' + esc(u.name) + '</b>';
-
-      body += '<div class="mini">' + esc(u.email) + '</div></div>';
-
-      body += '<span class="pill ' + (isActive(u) ? 'g' : (isVerified(u) ? 'b' : 'a')) + '">' + statusOf(u) + '</span></div>';
+      body += '<div class="card mb"><div class="row"><div style="min-width:0"><b style="font-size:14.5px">' + esc(u.name || u.email) + '</b><div class="mini">' + esc(u.email) + '</div></div><span class="pill ' + (isActive(u) ? 'g' : (isVerified(u) ? 'b' : 'a')) + '">' + statusOf(u) + '</span></div>';
 
       body += '<div class="hr"></div><div class="g2">';
 
@@ -1866,11 +1628,11 @@ function vAdmin() {
 
       body += '<div><div class="mini">Deposited</div><b>' + eur(u.deposited || 0) + '</b></div>';
 
-      body += '<div><div class="mini">Bots</div><b>' + u.bots.length + '</b></div></div>';
+      body += '<div><div class="mini">Bots</div><b>' + u.bots.length + ' / ' + unlockedBots(u) + ' unlocked</b></div></div>';
 
       body += '<div class="hr"></div>';
 
-      body += '<div class="mini">Email: <b class="' + (u.emailVerified ? 'green' : 'amber') + '">' + (u.emailVerified ? 'confirmed' : 'pending - code ' + u.code) + '</b></div>';
+      body += '<div class="mini">Email: <b class="' + (u.emailVerified ? 'green' : 'amber') + '">' + (u.emailVerified ? 'confirmed' : 'pending - code ' + (u.code || '-')) + '</b></div>';
 
       body += '<div class="mini mt">Wallet: <b class="' + (u.wallet.connected ? 'green' : 'amber') + '">' + (u.wallet.connected ? esc(u.wallet.address) : 'not connected') + '</b></div>';
 
@@ -1900,31 +1662,15 @@ function vAdmin() {
 
     var list = TX.filter(function (t) { return t.type === 'withdraw'; });
 
-    list.sort(function (a, b) {
-
-      var pa = a.status === 'pending' ? 0 : 1;
-
-      var pb = b.status === 'pending' ? 0 : 1;
-
-      if (pa !== pb) { return pa - pb; }
-
-      return b.ts - a.ts;
-
-    });
+    list.sort(function (a, b) { var pa = a.status === 'pending' ? 0 : 1; var pb = b.status === 'pending' ? 0 : 1; if (pa !== pb) { return pa - pb; } return b.ts - a.ts; });
 
     if (!list.length) { body = '<p class="sub">No withdrawal requests yet.</p>'; }
 
     for (i = 0; i < list.length; i++) {
 
-      var t = list[i];
+      var t = list[i], tu = userBy(t.email);
 
-      var tu = userBy(t.email);
-
-      body += '<div class="card mb"><div class="row"><div style="min-width:0"><b>' + eur2(t.amount) + '</b>';
-
-      body += '<div class="mini">' + esc(tu ? tu.name : t.email) + '</div></div>';
-
-      body += '<span class="pill ' + (t.status === 'pending' ? 'a' : (t.status === 'paid' ? 'g' : 'r')) + '">' + esc(t.status) + '</span></div>';
+      body += '<div class="card mb"><div class="row"><div style="min-width:0"><b>' + eur2(t.amount) + '</b><div class="mini">' + esc(tu ? (tu.name || tu.email) : t.email) + '</div></div><span class="pill ' + (t.status === 'pending' ? 'a' : (t.status === 'paid' ? 'g' : 'r')) + '">' + esc(t.status) + '</span></div>';
 
       body += '<div class="hr"></div><div class="mini">Network: ' + esc(t.method || '-') + '</div>';
 
@@ -1956,15 +1702,9 @@ function vAdmin() {
 
     for (i = 0; i < dlist.length; i++) {
 
-      var d = dlist[i];
+      var d = dlist[i], du = userBy(d.email);
 
-      var du = userBy(d.email);
-
-      body += '<div class="item"><div class="av">IN</div><div class="t"><b>' + eur2(d.amount) + '</b>';
-
-      body += '<span>' + esc(du ? du.name : d.email) + '</span><span>' + esc(d.method || '-') + ' - ' + dt(d.ts) + '</span></div>';
-
-      body += '<span class="pill ' + (d.status === 'credited' ? 'g' : 'a') + '">' + esc(d.status) + '</span></div>';
+      body += '<div class="item mb"><div class="av">IN</div><div class="t"><b>' + eur2(d.amount) + '</b><span>' + esc(du ? (du.name || du.email) : d.email) + '</span><span>' + esc(d.method || '-') + ' - ' + dt(d.ts) + '</span></div><span class="pill ' + (d.status === 'credited' ? 'g' : 'a') + '">' + esc(d.status) + '</span></div>';
 
     }
 
@@ -1984,19 +1724,9 @@ function vAdmin() {
 
       var a = 0;
 
-      holders.forEach(function (u) {
+      holders.forEach(function (u) { var p = (u.pos || []).filter(function (x) { return x.bot === b.id; })[0]; a += (p ? p.alloc : 0); });
 
-        var p = (u.pos || []).filter(function (x) { return x.bot === b.id; })[0];
-
-        a += (p ? p.alloc : 0);
-
-      });
-
-      return '<div class="item mb"><div class="av">' + b.name.slice(0, 2).toUpperCase() + '</div>' +
-
-        '<div class="t"><b>' + b.name + '</b><span>' + holders.length + ' users - ' + eur(a) + ' allocated</span></div>' +
-
-        '<span class="pill g">+' + b.roi + '%</span></div>';
+      return '<div class="item mb"><div class="av">' + b.name.slice(0, 2).toUpperCase() + '</div><div class="t"><b>' + b.name + '</b><span>' + holders.length + ' users - ' + eur(a) + ' allocated</span></div><span class="pill g">max ' + eur(CFG.dailyCapPerBot) + '</span></div>';
 
     }).join('');
 
@@ -2008,7 +1738,7 @@ function vAdmin() {
 
     body += '<div class="card"><form data-form="adminsettings">';
 
-    body += '<div class="field"><label>Wallet connect URL (your link)</label><input name="connectUrl" value="' + esc(CFG.connectUrl) + '"></div>';
+    body += '<div class="field"><label>Wallet connect URL</label><input name="connectUrl" value="' + esc(CFG.connectUrl) + '"></div>';
 
     body += '<div class="field"><label>Open connect link in</label><select name="connectMode">';
 
@@ -2022,9 +1752,31 @@ function vAdmin() {
 
     body += '<div class="field"><label>Minimum withdrawal (EUR)</label><input name="minWithdraw" type="number" value="' + CFG.minWithdraw + '"></div>';
 
-    body += '<div class="field"><label>Capital per bot activation (% of balance)</label><input name="allocPct" type="number" value="' + CFG.allocPct + '"></div>';
+    body += '<div class="field"><label>Capital per bot (EUR)</label><input name="botCapital" type="number" value="' + CFG.botCapital + '"></div>';
 
-    body += '<div class="field"><label>Admin code</label><input name="adminCode" value="' + esc(CFG.adminCode) + '"></div>';
+    body += '<div class="field"><label>Max profit per bot per 24h (EUR)</label><input name="dailyCapPerBot" type="number" value="' + CFG.dailyCapPerBot + '"></div>';
+
+    body += '<div class="field"><label>Show code on screen</label><select name="showCode">';
+
+    body += '<option value="auto"' + (CFG.showCode === 'auto' ? ' selected' : '') + '>Auto (only if email fails)</option>';
+
+    body += '<option value="always"' + (CFG.showCode === 'always' ? ' selected' : '') + '>Always</option>';
+
+    body += '<option value="never"' + (CFG.showCode === 'never' ? ' selected' : '') + '>Never</option></select></div>';
+
+    body += '<div class="field"><label>Email provider</label><select name="emailProvider">';
+
+    body += '<option value="formsubmit"' + (CFG.emailProvider === 'formsubmit' ? ' selected' : '') + '>FormSubmit (no setup)</option>';
+
+    body += '<option value="emailjs"' + (CFG.emailProvider === 'emailjs' ? ' selected' : '') + '>EmailJS (needs keys)</option></select></div>';
+
+    body += '<div class="field"><label>EmailJS public key</label><input name="emailjsPublicKey" value="' + esc(CFG.emailjsPublicKey) + '"></div>';
+
+    body += '<div class="field"><label>EmailJS service id</label><input name="emailjsServiceId" value="' + esc(CFG.emailjsServiceId) + '"></div>';
+
+    body += '<div class="field"><label>EmailJS template id</label><input name="emailjsTemplateId" value="' + esc(CFG.emailjsTemplateId) + '"></div>';
+
+    body += '<div class="field"><label>Secret admin code</label><input name="adminCode" value="' + esc(CFG.adminCode) + '"></div>';
 
     body += '<button class="btn primary" type="submit">Save settings</button></form>';
 
@@ -2042,15 +1794,11 @@ function vAdmin() {
 
   h += '<p class="sub mt">Full control over accounts, balances, payouts and settings.</p>';
 
-  h += '<div class="tabs mb">' + tabs.map(function (t) {
-
-    return '<div class="tab ' + (ADMIN_TAB === t[0] ? 'on' : '') + '" data-action="admin-tab" data-tab="' + t[0] + '">' + t[1] + '</div>';
-
-  }).join('') + '</div>';
+  h += '<div class="tabs mb">' + tabs.map(function (t) { return '<div class="tab ' + (ADMIN_TAB === t[0] ? 'on' : '') + '" data-action="admin-tab" data-tab="' + t[0] + '">' + t[1] + '</div>'; }).join('') + '</div>';
 
   h += body;
 
-  h += '<div class="hr"></div><div class="mini center">Admin code: ' + esc(CFG.adminCode) + ' - engine ' + (CFG.botEngine ? 'running' : 'paused') + '</div></div>';
+  h += '<div class="hr"></div><div class="mini center">Engine ' + (CFG.botEngine ? 'running' : 'paused') + '</div></div>';
 
   return h;
 
@@ -2064,7 +1812,7 @@ function render() {
 
   if (PROTECTED.indexOf(r) > -1 && !me()) { location.hash = '#/login'; return; }
 
-  if ((r === 'login' || r === 'register') && me() && isVerified(me())) { location.hash = '#/dashboard'; return; }
+  if (r === 'login' && me() && isVerified(me())) { location.hash = '#/dashboard'; return; }
 
   if (NEEDS_VERIFY.indexOf(r) > -1 && !isVerified(me())) { location.hash = '#/verify'; return; }
 
@@ -2076,39 +1824,17 @@ function render() {
 
   var V = {
 
-    landing: vLanding,
+    landing: vLanding, login: vAuth, verify: vVerify, dashboard: vDashboard, bots: vBots,
 
-    login: function () { return vAuth('login'); },
-
-    register: function () { return vAuth('register'); },
-
-    verify: vVerify,
-
-    dashboard: vDashboard,
-
-    bots: vBots,
-
-    deposit: vDeposit,
-
-    withdraw: vWithdraw,
-
-    account: vAccount,
-
-    admin: vAdmin
+    deposit: vDeposit, withdraw: vWithdraw, account: vAccount, admin: vAdmin
 
   };
 
   var html;
 
-  try {
+  try { html = (V[r] || vLanding)(); }
 
-    html = (V[r] || vLanding)();
-
-  } catch (e) {
-
-    html = '<div class="wrap"><div class="banner warn"><div><b>Page could not load</b><span>' + esc(e.message || e) + '</span></div></div><a class="btn primary" href="#/">Back to home</a></div>';
-
-  }
+  catch (e) { html = '<div class="wrap"><div class="banner warn"><div><b>Page could not load</b><span>' + esc(e.message || e) + '</span></div></div><a class="btn primary" href="#/">Back to home</a></div>'; }
 
   $('#view').innerHTML = html;
 
@@ -2128,39 +1854,19 @@ function renderKeep(oldBal, up) {
 
   if (oldBal === undefined) { return; }
 
-  var u = me();
+  var u = me(); if (!u) { return; }
 
-  if (!u) { return; }
+  [$('#hdrBal'), $('#dash-bal'), $('#wd-bal'), $('#dep-bal')].forEach(function (el) { if (el) { animNum(el, oldBal, u.balance, 700, eur2); } });
 
-  var els = [$('#hdrBal'), $('#dash-bal'), $('#wd-bal'), $('#dep-bal')];
-
-  els.forEach(function (el) { if (el) { animNum(el, oldBal, u.balance, 700, eur2); } });
-
-  flash($('#hdrBal'), up);
-
-  flash($('#dash-bal'), up);
+  flash($('#hdrBal'), up); flash($('#dash-bal'), up);
 
 }
 
 
 
-function openDrawer() {
+function openDrawer() { $('#drawer').classList.add('on'); $('#scrim').classList.add('on'); if (document.activeElement && document.activeElement.blur) { document.activeElement.blur(); } }
 
-  $('#drawer').classList.add('on');
-
-  $('#scrim').classList.add('on');
-
-  if (document.activeElement && document.activeElement.blur) { document.activeElement.blur(); }
-
-}
-
-function closeDrawer() {
-
-  $('#drawer').classList.remove('on');
-
-  $('#scrim').classList.remove('on');
-
-}
+function closeDrawer() { $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); }
 
 
 
@@ -2176,67 +1882,29 @@ document.addEventListener('click', function (e) {
 
     buzz(6);
 
-
-
     if (act === 'drawer') { openDrawer(); return; }
 
     if (act === 'close-drawer') { closeDrawer(); return; }
 
     if (act === 'a2hs-close') { $('#a2hs').classList.remove('on'); LS.s('a2hsOff', 1); return; }
 
-
-
-    if (act === 'copy') {
-
-      var txt = a.getAttribute('data-copy');
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-
-        navigator.clipboard.writeText(txt).then(function () { toast('Copied'); }, function () { toast('Copy: ' + txt); });
-
-      } else { toast('Copy: ' + txt); }
-
-      return;
-
-    }
+    if (act === 'copy') { var txt = a.getAttribute('data-copy'); if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(function () { toast('Copied'); }, function () { toast('Copy: ' + txt); }); } else { toast('Copy: ' + txt); } return; }
 
     if (act === 'logout') { SESSION = null; save(); toast('Logged out'); go('#/'); return; }
 
-    if (act === 'reset') {
-
-      LS.c('users'); LS.c('session'); LS.c('tx'); LS.c('config'); LS.c('admin'); LS.c('a2hsOff');
-
-      USERS = []; SESSION = null; TX = []; toast('Demo data reset'); go('#/'); return;
-
-    }
+    if (act === 'reset') { LS.c('users'); LS.c('session'); LS.c('tx'); LS.c('config'); LS.c('admin'); LS.c('a2hsOff'); USERS = []; SESSION = null; TX = []; toast('Data reset'); go('#/'); return; }
 
     if (act === 'connect-wallet') {
 
-      var cu = me();
+      var cu = me(); if (!cu) { return; }
 
-      if (!cu) { return; }
+      if (!cu.wallet.connected) { cu.wallet = { connected: true, address: randAddr(), at: Date.now() }; save(); toast('Wallet connected'); buzz([10, 30, 10]); }
 
-      if (!cu.wallet.connected) {
-
-        cu.wallet = { connected: true, address: randAddr(), at: Date.now() };
-
-        save(); toast('Wallet connected'); buzz([10, 30, 10]);
-
-      } else { toast('Wallet already connected'); }
+      else { toast('Wallet already connected'); }
 
       render();
 
-      setTimeout(function () {
-
-        try {
-
-          if (CFG.connectMode === 'same') { location.href = CFG.connectUrl; }
-
-          else { var w = window.open(CFG.connectUrl, '_blank'); if (!w) { location.href = CFG.connectUrl; } }
-
-        } catch (err) {}
-
-      }, 400);
+      setTimeout(function () { try { if (CFG.connectMode === 'same') { location.href = CFG.connectUrl; } else { var w = window.open(CFG.connectUrl, '_blank'); if (!w) { location.href = CFG.connectUrl; } } } catch (err) {} }, 400);
 
       return;
 
@@ -2244,9 +1912,7 @@ document.addEventListener('click', function (e) {
 
     if (act === 'toggle-bot') {
 
-      var u = me();
-
-      if (!u) { return; }
+      var u = me(); if (!u) { return; }
 
       var id = a.getAttribute('data-bot');
 
@@ -2268,35 +1934,37 @@ document.addEventListener('click', function (e) {
 
         u.bots = u.bots.filter(function (x) { return x !== id; });
 
-        ensure(u);
+        ensure(u); save();
 
         toast('Bot stopped - ' + eur(back) + ' returned to balance');
 
       } else {
 
-        var alloc = Math.max(0, Math.floor(u.balance * (CFG.allocPct / 100)));
+        if (u.bots.length >= unlockedBots(u)) { toast('Deposit ' + eur(CFG.botCapital) + ' per bot to unlock more'); go('#/deposit'); return; }
 
-        if (alloc < 25) { toast('Balance too low to allocate'); return; }
+        if (u.balance < CFG.botCapital) { toast('You need ' + eur(CFG.botCapital) + ' balance to activate'); return; }
 
-        u.balance = +(u.balance - alloc).toFixed(2);
+        u.balance = +(u.balance - CFG.botCapital).toFixed(2);
 
         u.bots.push(id);
 
-        ensure(u);
+        ensure(u); save();
 
-        var np = u.pos.filter(function (x) { return x.bot === id; })[0];
-
-        if (np) { np.alloc = alloc; }
-
-        toast(eur(alloc) + ' moved into the bot');
+        toast(eur(CFG.botCapital) + ' moved into the bot');
 
       }
-
-      save();
 
       renderKeep(old, u.balance > old);
 
       return;
+
+    }
+
+    if (act === 'resend') {
+
+      var uu = me(); if (!uu) { return; }
+
+      issueCode(uu); toast('New code sent'); return;
 
     }
 
@@ -2308,105 +1976,19 @@ document.addEventListener('click', function (e) {
 
     if (act === 'admin-nuke') { USERS = []; TX = []; SESSION = null; save(); toast('All accounts deleted'); render(); return; }
 
-    if (act === 'admin-verify') {
+    if (act === 'admin-verify') { var uv = userBy(a.getAttribute('data-email')); if (uv) { uv.emailVerified = true; save(); toast('Email verified'); } render(); return; }
 
-      var uv = userBy(a.getAttribute('data-email'));
+    if (act === 'admin-credit') { var uc = userBy(a.getAttribute('data-email')); var v1 = parseFloat(prompt('Add to balance (EUR)', '100')); if (!v1) { return; } uc.balance = +(uc.balance + v1).toFixed(2); save(); toast('+' + eur(v1)); render(); return; }
 
-      if (uv) { uv.emailVerified = true; save(); toast('Email verified'); }
+    if (act === 'admin-debit') { var ud = userBy(a.getAttribute('data-email')); var v2 = parseFloat(prompt('Subtract from balance (EUR)', '100')); if (!v2) { return; } ud.balance = +Math.max(0, ud.balance - v2).toFixed(2); save(); toast('-' + eur(v2)); render(); return; }
 
-      render(); return;
+    if (act === 'admin-setbal') { var us = userBy(a.getAttribute('data-email')); var v3 = parseFloat(prompt('Set balance to (EUR)', String(us.balance))); if (isNaN(v3)) { return; } us.balance = +v3.toFixed(2); save(); toast('Balance set'); render(); return; }
 
-    }
+    if (act === 'admin-del') { var ux = userBy(a.getAttribute('data-email')); if (!confirm('Delete ' + ux.email + '?')) { return; } USERS = USERS.filter(function (x) { return x.email !== ux.email; }); TX = TX.filter(function (x) { return x.email !== ux.email; }); save(); toast('Deleted'); render(); return; }
 
-    if (act === 'admin-credit') {
+    if (act === 'admin-pay') { var t1 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0]; if (t1) { t1.status = 'paid'; t1.paidAt = Date.now(); save(); toast('Marked as paid'); } render(); return; }
 
-      var uc = userBy(a.getAttribute('data-email'));
-
-      var v1 = parseFloat(prompt('Add to balance (EUR)', '100'));
-
-      if (!v1) { return; }
-
-      uc.balance = +(uc.balance + v1).toFixed(2); save(); toast('+' + eur(v1)); render(); return;
-
-    }
-
-    if (act === 'admin-debit') {
-
-      var ud = userBy(a.getAttribute('data-email'));
-
-      var v2 = parseFloat(prompt('Subtract from balance (EUR)', '100'));
-
-      if (!v2) { return; }
-
-      ud.balance = +Math.max(0, ud.balance - v2).toFixed(2); save(); toast('-' + eur(v2)); render(); return;
-
-    }
-
-    if (act === 'admin-setbal') {
-
-      var us = userBy(a.getAttribute('data-email'));
-
-      var v3 = parseFloat(prompt('Set balance to (EUR)', String(us.balance)));
-
-      if (isNaN(v3)) { return; }
-
-      us.balance = +v3.toFixed(2); save(); toast('Balance set'); render(); return;
-
-    }
-
-    if (act === 'admin-del') {
-
-      var ux = userBy(a.getAttribute('data-email'));
-
-      if (!confirm('Delete ' + ux.email + '?')) { return; }
-
-      USERS = USERS.filter(function (x) { return x.email !== ux.email; });
-
-      TX = TX.filter(function (x) { return x.email !== ux.email; });
-
-      save(); toast('Deleted'); render(); return;
-
-    }
-
-    if (act === 'admin-pay') {
-
-      var t1 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0];
-
-      if (t1) { t1.status = 'paid'; t1.paidAt = Date.now(); save(); toast('Marked as paid'); }
-
-      render(); return;
-
-    }
-
-    if (act === 'admin-reject') {
-
-      var t2 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0];
-
-      if (t2) {
-
-        t2.status = 'rejected';
-
-        var ur = userBy(t2.email);
-
-        if (ur) { ur.balance = +(ur.balance + t2.amount).toFixed(2); }
-
-        save(); toast('Rejected and refunded');
-
-      }
-
-      render(); return;
-
-    }
-
-    if (act === 'resend') {
-
-      var uu = me();
-
-      if (uu) { uu.code = randCode(); save(); toast('New code sent'); render(); }
-
-      return;
-
-    }
+    if (act === 'admin-reject') { var t2 = TX.filter(function (x) { return x.id === a.getAttribute('data-id'); })[0]; if (t2) { t2.status = 'rejected'; var ur = userBy(t2.email); if (ur) { ur.balance = +(ur.balance + t2.amount).toFixed(2); } save(); toast('Rejected and refunded'); } render(); return; }
 
   }
 
@@ -2416,9 +1998,7 @@ document.addEventListener('click', function (e) {
 
   if (tab) {
 
-    var all = document.querySelectorAll('#depTabs .tab');
-
-    var i;
+    var all = document.querySelectorAll('#depTabs .tab'), i;
 
     for (i = 0; i < all.length; i++) { all[i].classList.remove('on'); }
 
@@ -2446,15 +2026,9 @@ document.addEventListener('click', function (e) {
 
   if (chip) {
 
-    var box = chip.closest('.chips');
+    var box = chip.closest('.chips'), form = box.closest('form'), inp = form.querySelector('[name=amount]');
 
-    var form = box.closest('form');
-
-    var inp = form.querySelector('[name=amount]');
-
-    var allc = box.querySelectorAll('.chip');
-
-    var j;
+    var allc = box.querySelectorAll('.chip'), j;
 
     for (j = 0; j < allc.length; j++) { allc[j].classList.remove('on'); }
 
@@ -2464,11 +2038,7 @@ document.addEventListener('click', function (e) {
 
     if (chip.getAttribute('data-amt')) { inp.value = chip.getAttribute('data-amt'); }
 
-    else if (chip.getAttribute('data-pct')) {
-
-      inp.value = Math.floor((um.balance || 0) * (parseFloat(chip.getAttribute('data-pct')) / 100));
-
-    }
+    else if (chip.getAttribute('data-pct')) { inp.value = Math.floor((um.balance || 0) * (parseFloat(chip.getAttribute('data-pct')) / 100)); }
 
     return;
 
@@ -2496,31 +2066,29 @@ document.addEventListener('submit', function (e) {
 
 
 
-  if (k === 'register') {
+  if (k === 'start') {
 
-    var email = (fd.get('email') + '').trim().toLowerCase();
+    var email = norm(fd.get('email'));
 
-    var pass = fd.get('pass') + '';
+    if (!validEmail(email)) { toast('Enter a valid email address'); return; }
 
-    var name = (fd.get('name') + '').trim();
+    var acct = userBy(email);
 
-    if (pass.length < 6) { toast('Password must be at least 6 characters'); return; }
+    if (!acct) {
 
-    if (!email) { toast('Enter your email'); return; }
+      acct = { email: email, name: nameFromEmail(email), balance: 0, allocated: 0, deposited: 0, emailVerified: false, code: '', codeExp: 0, codeSentOk: null, wallet: { connected: false, address: '', at: 0 }, bots: [], pos: [], created: Date.now() };
 
-    if (userBy(email)) { toast('This email is already registered'); return; }
+      USERS.push(acct);
 
-    USERS.push({
+    }
 
-      email: email, pass: pass, name: name, balance: 0, allocated: 0, deposited: 0,
+    SESSION = email; save();
 
-      emailVerified: false, code: randCode(), wallet: { connected: false, address: '', at: 0 },
+    go('#/verify');
 
-      bots: [], pos: [], created: Date.now()
+    issueCode(acct);
 
-    });
-
-    SESSION = email; save(); toast('Account created - confirm your email'); go('#/verify');
+    toast('Sending code to ' + email);
 
     return;
 
@@ -2534,27 +2102,15 @@ document.addEventListener('submit', function (e) {
 
     var c = (fd.get('code') + '').trim();
 
+    if (!u.code) { toast('Request a new code'); return; }
+
+    if (Date.now() > u.codeExp) { toast('Code expired - send a new one'); return; }
+
     if (c !== u.code) { toast('Wrong code, try again'); return; }
 
-    u.emailVerified = true; save(); toast('Email confirmed'); go('#/deposit');
+    u.emailVerified = true; u.code = ''; u.codeExp = 0; save();
 
-    return;
-
-  }
-
-
-
-  if (k === 'login') {
-
-    var em = (fd.get('email') + '').trim().toLowerCase();
-
-    var pw = fd.get('pass') + '';
-
-    var found = userBy(em);
-
-    if (!found || found.pass !== pw) { toast('Wrong email or password'); return; }
-
-    SESSION = em; save(); toast('Welcome back'); go(found.emailVerified ? '#/dashboard' : '#/verify');
+    toast('Logged in'); go('#/dashboard');
 
     return;
 
@@ -2576,21 +2132,13 @@ document.addEventListener('submit', function (e) {
 
     var method = ml ? ml.textContent : 'Solana';
 
-    var tx = {
-
-      id: 'd' + Date.now(), email: SESSION, type: 'deposit', amount: amt,
-
-      status: 'pending', ts: Date.now(), method: method, ref: fd.get('ref') || ''
-
-    };
+    var tx = { id: 'd' + Date.now(), email: SESSION, type: 'deposit', amount: amt, status: 'pending', ts: Date.now(), method: method, ref: fd.get('ref') || '' };
 
     TX.push(tx); save(); toast('Deposit reported - verifying...'); render();
 
     setTimeout(function () {
 
-      var cu = me();
-
-      if (!cu) { return; }
+      var cu = me(); if (!cu) { return; }
 
       tx.status = 'credited';
 
@@ -2602,7 +2150,7 @@ document.addEventListener('submit', function (e) {
 
       if (route() === 'deposit' || route() === 'dashboard') { renderKeep(old, true); }
 
-    }, 3500);
+    }, 3000);
 
     return;
 
@@ -2628,13 +2176,7 @@ document.addEventListener('submit', function (e) {
 
     u.balance = +(u.balance - wa).toFixed(2);
 
-    TX.push({
-
-      id: 'w' + Date.now(), email: SESSION, type: 'withdraw', amount: wa,
-
-      status: 'pending', ts: Date.now(), method: (fd.get('net') || 'Solana'), addr: addr
-
-    });
+    TX.push({ id: 'w' + Date.now(), email: SESSION, type: 'withdraw', amount: wa, status: 'pending', ts: Date.now(), method: (fd.get('net') || 'Solana'), addr: addr });
 
     save(); toast('Withdrawal requested - Pending'); renderKeep(oldb, false);
 
@@ -2646,9 +2188,9 @@ document.addEventListener('submit', function (e) {
 
   if (k === 'adminlogin') {
 
-    if ((fd.get('code') + '') !== CFG.adminCode) { toast('Wrong admin code'); return; }
+    if ((fd.get('code') + '') !== CFG.adminCode) { toast('Wrong code'); return; }
 
-    ADMIN = true; LS.s('admin', true); toast('Welcome, admin'); render();
+    ADMIN = true; LS.s('admin', true); toast('Welcome'); render();
 
     return;
 
@@ -2670,7 +2212,19 @@ document.addEventListener('submit', function (e) {
 
     CFG.minWithdraw = parseFloat(val('minWithdraw')) || DEFAULTS.minWithdraw;
 
-    CFG.allocPct = Math.max(1, Math.min(90, parseFloat(val('allocPct')) || DEFAULTS.allocPct));
+    CFG.botCapital = parseFloat(val('botCapital')) || DEFAULTS.botCapital;
+
+    CFG.dailyCapPerBot = parseFloat(val('dailyCapPerBot')) || DEFAULTS.dailyCapPerBot;
+
+    CFG.showCode = val('showCode') || 'auto';
+
+    CFG.emailProvider = val('emailProvider') || 'formsubmit';
+
+    CFG.emailjsPublicKey = val('emailjsPublicKey');
+
+    CFG.emailjsServiceId = val('emailjsServiceId');
+
+    CFG.emailjsTemplateId = val('emailjsTemplateId');
 
     CFG.adminCode = val('adminCode') || DEFAULTS.adminCode;
 
@@ -2684,43 +2238,19 @@ document.addEventListener('submit', function (e) {
 
 
 
-document.addEventListener('focusin', function (e) {
+document.addEventListener('focusin', function (e) { var t = e.target; if (t && t.tagName && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) { document.body.classList.add('kb'); } });
 
-  var t = e.target;
-
-  if (t && t.tagName && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) {
-
-    document.body.classList.add('kb');
-
-  }
-
-});
-
-document.addEventListener('focusout', function () {
-
-  setTimeout(function () { document.body.classList.remove('kb'); }, 120);
-
-});
+document.addEventListener('focusout', function () { setTimeout(function () { document.body.classList.remove('kb'); }, 120); });
 
 
 
 var tsX = 0, tsY = 0, tsT = 0;
 
-document.addEventListener('touchstart', function (e) {
-
-  var t = e.touches[0];
-
-  tsX = t.clientX; tsY = t.clientY; tsT = Date.now();
-
-}, { passive: true });
+document.addEventListener('touchstart', function (e) { var t = e.touches[0]; tsX = t.clientX; tsY = t.clientY; tsT = Date.now(); }, { passive: true });
 
 document.addEventListener('touchend', function (e) {
 
-  var t = e.changedTouches[0];
-
-  var dx = t.clientX - tsX;
-
-  var dy = t.clientY - tsY;
+  var t = e.changedTouches[0], dx = t.clientX - tsX, dy = t.clientY - tsY;
 
   if (Date.now() - tsT > 600 || Math.abs(dx) < 55 || Math.abs(dy) > 70) { return; }
 
@@ -2758,53 +2288,47 @@ function tick() {
 
   setText('stat-users', num(STATS.users));
 
-  setText('dash-profit', eur(STATS.profit));
-
 
 
   var u = me();
 
   if (u && u.pos.length) {
 
-    var i;
+    var now = Date.now(), i, tot = 0, allocTot = 0;
+
+    for (i = 0; i < u.pos.length; i++) { tickPos(u.pos[i], now); }
 
     for (i = 0; i < u.pos.length; i++) {
 
       var p = u.pos[i];
 
-      p.pnl = +(p.pnl + (Math.random() - 0.42) * 9).toFixed(2);
+      var elp = document.querySelector('[data-live-pnl="' + p.bot + '"]');
 
-      if (p.pnl < 0) { p.pnl = +(p.pnl + 2).toFixed(2); }
+      if (elp) { elp.textContent = '+' + eur(p.pnl); }
 
-      p.pct = +(p.pct + (Math.random() - 0.45) * 0.14).toFixed(2);
+      var elc = document.querySelector('[data-live-pct="' + p.bot + '"]');
 
-      if (p.pct < 0.05) { p.pct = 0.05; }
+      if (elc) { elc.textContent = '+' + p.pct.toFixed(1) + '%'; }
 
-      var el = document.querySelector('[data-live-pnl="' + p.bot + '"]');
+      var elb = document.querySelector('[data-live-bar="' + p.bot + '"]');
 
-      if (el) { el.textContent = '+$' + p.pnl.toFixed(0); }
+      if (elb) { elb.style.width = Math.min(100, (p.prog || 0) * 100).toFixed(1) + '%'; }
+
+      tot += p.pnl; allocTot += p.alloc || 0;
 
     }
 
-    var tot = 0;
-
-    for (i = 0; i < u.pos.length; i++) { tot += u.pos[i].pnl; }
-
     setText('dash-pnl', (tot >= 0 ? '+' : '') + eur2(tot));
+
+    setText('dash-alloc', eur2(allocTot));
 
     save();
 
   }
 
-  if (Math.random() < 0.5) {
 
-    payIdx = (payIdx + 1) % PAY.length;
 
-    setText('payName', PAY[payIdx][0]);
-
-    setText('payAmt', eur(PAY[payIdx][1]));
-
-  }
+  if (Math.random() < 0.5) { payIdx = (payIdx + 1) % PAY.length; setText('payName', PAY[payIdx][0]); setText('payAmt', eur(PAY[payIdx][1])); }
 
 }
 
@@ -2818,17 +2342,7 @@ function tick() {
 
   var standalone = window.navigator.standalone === true;
 
-  if (isIOS && !standalone && !LS.g('a2hsOff', 0)) {
-
-    setTimeout(function () {
-
-      var a = $('#a2hs');
-
-      if (a) { a.classList.add('on'); }
-
-    }, 1800);
-
-  }
+  if (isIOS && !standalone && !LS.g('a2hsOff', 0)) { setTimeout(function () { var a = $('#a2hs'); if (a) { a.classList.add('on'); } }, 1800); }
 
 })();
 
@@ -2838,32 +2352,16 @@ window.addEventListener('hashchange', function () { closeDrawer(); render(); });
 
 setInterval(tick, 2600);
 
-
-
 try { render(); } catch (err) { window.__crash((err && err.message) || String(err)); }
 
-
-
-setTimeout(function () {
-
-  var v = document.getElementById('view');
-
-  if (v && v.innerHTML.replace(/\s/g, '') === '' && window.__crash) {
-
-    window.__crash('De pagina is leeg gebleven. Is het bestand helemaal geplakt?');
-
-  }
-
-}, 1500);
-
-
+setTimeout(function () { var v = document.getElementById('view'); if (v && v.innerHTML.replace(/\s/g, '') === '' && window.__crash) { window.__crash('The page stayed empty.'); } }, 1500);
 
 })();
 
 </script>
 
+
+
 </body>
 
 </html>
-
-<!-- EINDE VAN HET BESTAND -->
