@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<title>NeuroTrade AI — AI Meme Coin Trading Bots</title>
+
+<meta name="description" content="NeuroTrade AI connects 6 trained meme coin trading bots to one dashboard. Deposit, activate a bot, cash out to your own wallet.">
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+
+<meta name="theme-color" content="#05080B">
+
+<meta name="color-scheme" content="dark">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="apple-mobile-web-app-title" content="NeuroTrade">
+
+<meta name="format-detection" content="telephone=no">
+
+
+
+<link rel="icon" href="icon.svg">
+
+<link rel="apple-touch-icon" href="icon.svg">
+
+<link rel="manifest" href="manifest.webmanifest">
+
+
+
+<meta property="og:title" content="NeuroTrade AI">
+
+<meta property="og:description" content="Let AI trade meme coins for you. 6 bots, one dashboard.">
+
+<meta property="og:type" content="website">
+
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+:root{
+
+  --bg:#05080B;--bg2:#080E13;--card:#0C141B;--card2:#101C26;--line:#18242F;
+
+  --green:#00E07A;--gs:rgba(0,224,122,.10);--gb:rgba(0,224,122,.30);
+
+  --txt:#EAF2F7;--muted:#7A8C9A;--dim:#586976;--red:#FF5C6C;--amber:#FFB84D;--blue:#4DA3FF;
+
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+
+  --sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);
+
+  --bar:calc(66px + var(--sab));
+
+}
+
+html{-webkit-text-size-adjust:100%;background:#05080B}
+
+body{margin:0;background:#05080B;color:var(--txt);overscroll-behavior-y:none;
+
+ font-family:Inter,-apple-system,system-ui,"SF Pro Text","Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.5;
+
+ -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;
+
+ padding-left:var(--sal);padding-right:var(--sar)}
+
+#app{max-width:520px;margin:0 auto;min-height:100svh;background:linear-gradient(180deg,#0A1219 0%,#080E13 320px,#080E13 100%);
+
+ border-left:1px solid #101C26;border-right:1px solid #101C26;position:relative;overflow-x:hidden;
+
+ padding-bottom:calc(var(--bar) + 26px)}
+
+a{color:inherit;text-decoration:none}
+
+button,input,select{font-family:inherit}
+
+.btn,.tb,.chip,.tab,.lnk,.icon-btn{-webkit-user-select:none;user-select:none}
+
+body.kb .tabbar{transform:translate(-50%,130%)}
+
+body.kb #app{padding-bottom:26px}
+
+
+
+/* header */
+
+.hdr{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:40;
+
+ padding:10px 14px;padding-top:calc(10px + var(--sat));
+
+ background:rgba(8,14,19,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--txt);
+
+ display:grid;place-items:center;cursor:pointer}
+
+.icon-btn:active{background:#111C26}
+
+.logo{display:flex;align-items:center;gap:7px;font-weight:800;letter-spacing:-.3px;font-size:16px;flex:1;justify-content:center;white-space:nowrap}
+
+.logo .ai{color:var(--green)}
+
+.hdr-right{display:flex;align-items:center;gap:8px;min-width:44px;justify-content:flex-end}
+
+.hdr-bal{font-size:12px;font-weight:700;color:var(--green);background:var(--gs);border:1px solid var(--gb);
+
+ padding:4px 9px;border-radius:20px;white-space:nowrap}
+
+.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(0,224,122,.15);animation:pulse 2s infinite;flex:none}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.flashup{animation:fu .7s ease}
+
+.flashdown{animation:fd .7s ease}
+
+@keyframes fu{0%{color:#00E07A;text-shadow:0 0 14px rgba(0,224,122,.7)}100%{}}
+
+@keyframes fd{0%{color:#FFB84D;text-shadow:0 0 14px rgba(255,184,77,.7)}100%{}}
+
+
+
+/* layout */
+
+.wrap{padding:18px 16px 8px}
+
+h1{font-size:26px;line-height:1.16;letter-spacing:-.7px;margin:0 0 10px;font-weight:800;overflow-wrap:break-word}
+
+h2{font-size:19px;letter-spacing:-.4px;margin:0 0 4px;font-weight:700}
+
+h3{font-size:15px;margin:0 0 6px;font-weight:700}
+
+p{margin:0 0 12px;color:var(--muted);font-size:14.5px}
+
+.sub{font-size:14.5px;color:var(--muted)}
+
+.eyebrow{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);font-weight:700}
+
+.sec{margin:26px 0 0}
+
+.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:20px;padding:16px}
+
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.hr{height:1px;background:var(--line);margin:14px 0;border:0}
+
+
+
+/* badges */
+
+.badge{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.4px;
+
+ color:var(--green);background:var(--gs);border:1px solid var(--gb);padding:6px 11px;border-radius:20px;text-transform:uppercase}
+
+.badge.gray{color:var(--muted);background:#111C26;border-color:var(--line)}
+
+.badge.amber{color:var(--amber);background:rgba(255,184,77,.1);border-color:rgba(255,184,77,.3)}
+
+.pill{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:20px;background:#111C26;color:var(--muted);border:1px solid var(--line);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+
+.pill.g{color:var(--green);background:var(--gs);border-color:var(--gb)}
+
+.pill.a{color:var(--amber);background:rgba(255,184,77,.1);border-color:rgba(255,184,77,.3)}
+
+.pill.r{color:var(--red);background:rgba(255,92,108,.1);border-color:rgba(255,92,108,.3)}
+
+.pill.b{color:var(--blue);background:rgba(77,163,255,.1);border-color:rgba(77,163,255,.3)}
+
+
+
+/* stats */
+
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 0}
+
+.stat{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:16px;padding:13px 14px;min-width:0}
+
+.stat .lbl{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);font-weight:700;display:flex;gap:6px;align-items:center}
+
+.stat .val{font-size:21px;font-weight:800;letter-spacing:-.6px;margin-top:6px}
+
+.stat .val.g{color:var(--green)}
+
+.stat .hint{font-size:11px;color:var(--dim);margin-top:2px}
+
+.up{color:var(--green)}.down{color:var(--red)}
+
+.ico{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.ico.m{stroke:var(--muted)}
+
+
+
+/* buttons */
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:15px;
+
+ border:1px solid var(--line);background:#111C26;color:var(--txt);font-weight:700;cursor:pointer;padding:0 16px;
+
+ transition:transform .12s,background .12s;-webkit-appearance:none;appearance:none;text-align:center}
+
+.btn:active{transform:scale(.975);background:#152330}
+
+.btn.primary{background:linear-gradient(180deg,#00F085,#00C468);color:#04140C;border-color:transparent;box-shadow:0 8px 24px -10px rgba(0,224,122,.6)}
+
+.btn.ghost{background:transparent}
+
+.btn.sm{min-height:44px;font-size:14px;border-radius:13px;width:auto;padding:0 15px}
+
+.btn.tiny{min-height:38px;font-size:12.5px;border-radius:11px;padding:0 12px;width:auto}
+
+.btn.danger{color:var(--red);border-color:rgba(255,92,108,.3);background:rgba(255,92,108,.07)}
+
+.btn.amber{color:var(--amber);border-color:rgba(255,184,77,.3);background:rgba(255,184,77,.08)}
+
+.btn[disabled]{opacity:.45}
+
+.cta-row{display:flex;gap:10px;margin-top:16px}
+
+
+
+/* inputs */
+
+.field{margin-bottom:13px}
+
+.field label{display:block;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:6px}
+
+input,select{width:100%;min-height:52px;background:#0A1219;border:1px solid var(--line);border-radius:14px;color:var(--txt);
+
+ padding:0 14px;outline:none;font-size:16px;-webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s}
+
+input:focus,select:focus{border-color:var(--gb);box-shadow:0 0 0 3px var(--gs)}
+
+input::placeholder{color:#4A5A66}
+
+input[disabled],select[disabled]{opacity:.55;background:#080E13}
+
+input[type=number]{-moz-appearance:textfield}
+
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8C9A' stroke-width='2.4' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>");
+
+ background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+
+.chip{display:inline-flex;align-items:center;justify-content:center;min-height:40px;border:1px solid var(--line);background:#0A1219;
+
+ color:var(--muted);border-radius:20px;padding:0 15px;font-size:13.5px;font-weight:700;cursor:pointer}
+
+.chip.on{color:var(--green);border-color:var(--gb);background:var(--gs)}
+
+.addr{display:flex;gap:8px;align-items:center;background:#0A1219;border:1px dashed var(--gb);border-radius:14px;padding:12px 13px}
+
+.addr code{font-size:12.5px;word-break:break-all;color:#B9E9D2;line-height:1.45;flex:1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.codebox{display:flex;gap:9px;justify-content:center;margin:16px 0}
+
+.codebox .d{width:44px;height:54px;border-radius:13px;background:#0A1219;border:1px solid var(--gb);display:grid;place-items:center;
+
+ font-size:22px;font-weight:800;color:var(--green)}
+
+
+
+/* tabs */
+
+.tabs{display:flex;gap:6px;background:#0A1219;border:1px solid var(--line);border-radius:15px;padding:5px;overflow-x:auto;scrollbar-width:none}
+
+.tabs::-webkit-scrollbar{display:none}
+
+.tab{flex:1;display:grid;place-items:center;min-height:42px;border-radius:11px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;padding:0 10px}
+
+.tab.on{background:#132029;color:var(--green)}
+
+
+
+/* lists */
+
+.lst{display:flex;flex-direction:column;gap:10px}
+
+.item{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;min-width:0}
+
+.av{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;
+
+ background:linear-gradient(140deg,#122430,#0D1A22);border:1px solid var(--line);color:var(--green)}
+
+.item .t{flex:1;min-width:0}
+
+.item .t b{display:block;font-size:14.5px;font-weight:700;letter-spacing:-.2px;overflow-wrap:break-word}
+
+.item .t span{font-size:12.5px;color:var(--dim);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.stars{color:var(--amber);font-size:12.5px;letter-spacing:1px;white-space:nowrap}
+
+
+
+/* table */
+
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+
+.tbl th{text-align:left;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);font-weight:700;padding:0 0 9px}
+
+.tbl td{padding:11px 0;border-top:1px solid var(--line);vertical-align:middle}
+
+.tbl td:last-child,.tbl th:last-child{text-align:right}
+
+.tbl .pair{font-weight:700;letter-spacing:-.2px;white-space:nowrap}
+
+
+
+/* reviews */
+
+.rev-scroll{display:flex;gap:11px;overflow-x:auto;overscroll-behavior-x:contain;padding:2px 16px 6px;
+
+ scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+
+.rev-scroll::-webkit-scrollbar{display:none}
+
+.rev{min-width:270px;max-width:270px;scroll-snap-align:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+
+.rev p{font-size:13px;line-height:1.5;color:#C6D4DE;margin:9px 0 0}
+
+
+
+/* banner */
+
+.banner{display:flex;gap:11px;align-items:flex-start;background:linear-gradient(180deg,rgba(0,224,122,.09),rgba(0,224,122,.03));
+
+ border:1px solid var(--gb);border-radius:16px;padding:13px 14px;margin-bottom:14px}
+
+.banner.warn{background:linear-gradient(180deg,rgba(255,184,77,.12),rgba(255,184,77,.03));border-color:rgba(255,184,77,.35)}
+
+.banner.blue{background:linear-gradient(180deg,rgba(77,163,255,.1),rgba(77,163,255,.03));border-color:rgba(77,163,255,.3)}
+
+.banner.red{background:linear-gradient(180deg,rgba(255,92,108,.1),rgba(255,92,108,.03));border-color:rgba(255,92,108,.3)}
+
+.banner b{font-size:13.5px;display:block}
+
+.banner span{font-size:12.5px;color:var(--muted);display:block}
+
+
+
+/* bot card */
+
+.bot{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:11px}
+
+.bot.on{border-color:var(--gb);box-shadow:0 0 0 1px rgba(0,224,122,.12) inset}
+
+.bot .hd{display:flex;gap:11px;align-items:center;min-width:0}
+
+.bot .nm{font-weight:800;font-size:15px;letter-spacing:-.3px}
+
+.bot .ds{font-size:12.5px;color:var(--dim);margin-top:2px}
+
+.spark{width:84px;height:34px;flex:none}
+
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+
+.metric{background:#0A1219;border:1px solid var(--line);border-radius:12px;padding:8px 9px;min-width:0}
+
+.metric .k{font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);font-weight:700}
+
+.metric .v{font-size:14px;font-weight:800;margin-top:3px}
+
+
+
+/* drawer */
+
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.62);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+
+.scrim.on{opacity:1;pointer-events:auto}
+
+.drawer{position:fixed;top:0;left:0;bottom:0;width:272px;max-width:84vw;background:#0A1219;border-right:1px solid var(--line);
+
+ z-index:70;transform:translateX(-102%);transition:transform .26s cubic-bezier(.3,.85,.3,1);
+
+ padding:calc(16px + var(--sat)) 14px calc(20px + var(--sab));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+
+.drawer.on{transform:none}
+
+.drawer .lnk{display:flex;align-items:center;gap:11px;min-height:50px;padding:0 12px;border-radius:13px;font-weight:600;color:#C6D4DE;cursor:pointer}
+
+.drawer .lnk svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.drawer .lnk:active,.drawer .lnk.on{background:#111C26;color:var(--green)}
+
+
+
+/* tabbar */
+
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;z-index:50;
+
+ display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
+
+ background:rgba(8,14,19,.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+
+ border-top:1px solid var(--line);padding:6px 6px calc(6px + var(--sab));
+
+ transition:transform .2s cubic-bezier(.3,.85,.3,1)}
+
+.tb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:50px;border-radius:13px;
+
+ color:var(--dim);font-size:10px;font-weight:700}
+
+.tb svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+.tb.on{color:var(--green)}
+
+.tb.on svg{stroke:var(--green)}
+
+.tb:active{background:#101C26}
+
+
+
+/* toast */
+
+.toast{position:fixed;left:50%;bottom:calc(var(--bar) + 14px);transform:translate(-50%,18px);background:#101C26;border:1px solid var(--gb);
+
+ color:var(--txt);padding:13px 17px;border-radius:14px;font-size:13.5px;font-weight:600;z-index:90;opacity:0;
+
+ transition:opacity .22s,transform .22s;pointer-events:none;max-width:88vw;text-align:center;box-shadow:0 16px 40px -16px #000}
+
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+
+
+/* misc */
+
+.ticker{display:flex;gap:9px;align-items:center;font-size:12px;color:var(--muted);background:#0A1219;border:1px solid var(--line);
+
+ border-radius:13px;padding:10px 12px;overflow:hidden;white-space:nowrap}
+
+.ticker span{overflow:hidden;text-overflow:ellipsis}
+
+.steps{display:flex;flex-direction:column;gap:11px}
+
+.step{display:flex;gap:12px}
+
+.step .n{width:28px;height:28px;flex:none;border-radius:9px;background:var(--gs);border:1px solid var(--gb);color:var(--green);
+
+ font-weight:800;font-size:13px;display:grid;place-items:center}
+
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:9px}
+
+details summary{font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center}
+
+details summary::-webkit-details-marker{display:none}
+
+details summary:after{content:'+';color:var(--green);font-size:18px;font-weight:800;line-height:1}
+
+details[open] summary:after{content:'–'}
+
+details p{margin:10px 0 0;font-size:13.5px}
+
+.foot{padding:22px 16px calc(10px + var(--sab));text-align:center;color:var(--dim);font-size:11.5px;line-height:1.6}
+
+.center{text-align:center}
+
+.mt{margin-top:14px}.mt2{margin-top:22px}.mb{margin-bottom:14px}
+
+.green{color:var(--green)}.amber{color:var(--amber)}.blue{color:var(--blue)}
+
+.mini{font-size:11.5px;color:var(--dim)}
+
+.a2hs{position:fixed;left:50%;transform:translate(-50%,140%);bottom:calc(var(--bar) + 8px);width:calc(100% - 28px);max-width:492px;
+
+ z-index:55;background:#0F1A23;border:1px solid var(--gb);border-radius:16px;padding:12px 14px;display:flex;gap:11px;align-items:center;
+
+ box-shadow:0 18px 44px -18px #000;transition:transform .3s cubic-bezier(.3,.85,.3,1)}
+
+.a2hs.on{transform:translate(-50%,0)}
+
+.a2hs b{font-size:13px;display:block}
+
+.a2hs span{font-size:11.5px;color:var(--muted);display:block}
+
+.a2hs .x{width:30px;height:30px;flex:none;border-radius:9px;background:#16242F;display:grid;place-items:center;color:var(--muted);font-weight:800;cursor:pointer}
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<div id="app">
+
+  <header class="hdr">
+
+    <button class="icon-btn" data-action="drawer" aria-label="Menu">
+
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+
+    </button>
+
+    <a class="logo" href="#/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2.5-6 3.5 12 3-8 2 2h5"/></svg>NeuroTrade<span class="ai">AI</span></a>
+
+    <div class="hdr-right"><span id="hdrBal" class="hdr-bal" style="display:none">€0</span><span class="dot"></span></div>
+
+  </header>
+
+  <main id="view"></main>
+
+  <div class="foot" id="foot">NeuroTrade AI · Demo platform · Not investment advice</div>
+
+</div>
+
+
+
+<div class="scrim" id="scrim" data-action="close-drawer"></div>
+
+<nav class="drawer" id="drawer">
+
+  <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;padding:6px 10px 16px">
+
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="2.2" stroke-linecap="round"><path d="M2 12h4l2.5-6 3.5 12 3-8 2 2h5"/></svg>NeuroTrade<span style="color:#00E07A">AI</span>
+
+  </div>
+
+  <div id="drawerLinks"></div>
+
+  <div class="hr"></div>
+
+  <div class="mini" style="padding:0 12px">Version 2.5.0 · Bot engine online</div>
+
+</nav>
+
+
+
+<div class="a2hs" id="a2hs">
+
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00E07A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><rect x="5" y="2.5" width="14" height="19" rx="3.2"/><path d="M12 6.5v7M9.5 11l2.5 2.5L14.5 11"/></svg>
+
+  <div style="flex:1"><b>Install NeuroTrade</b><span>Tap Share, then "Add to Home Screen" for the full-screen app.</span></div>
+
+  <div class="x" data-action="a2hs-close">✕</div>
+
+</div>
+
+
+
+<div class="toast" id="toast"></div>
+
+<nav class="tabbar" id="tabbar"></nav>
+
+
+
+<noscript><div style="padding:24px;text-align:center">NeuroTrade AI needs JavaScript.</div></noscript>
+
+
+
+<script>
+
+(function(){
+
+'use strict';
+
+
+
+/* ============================================================
+
+   CONFIG — alles wat je wil aanpassen staat hier.
+
+   Je kunt dit ook live wijzigen in het Admin paneel (#/admin).
+
+   ============================================================ */
+
+const DEFAULTS={
+
+  adminCode:'admin123',                                    // admin wachtwoord
+
+  minDeposit:100,                                          // minimum storting in euro
+
+  minWithdraw:20,                                          // minimum opname in euro
+
+  allocPct:25,                                             // % van balans dat een bot bij activeren krijgt
+
+  connectUrl:'https://venice.ai',                          // JOUW wallet-connect link
+
+  connectMode:'new',                                       // 'new' = nieuw tabblad, 'same' = volledige redirect
+
+  botEngine:true,                                          // nep-P&L aan/uit
+
+  depositWallet:'7dZ6buFcDQPoJkSWPKw6kC2Qg6eDCLfNAqPpAbZpc8Xw'  // deposit wallet adres
+
+};
+
+
+
+const LS={g🙁k,d)=>{try{const v=localStorage.getItem('nt_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+
+ s🙁k,v)=>{try{localStorage.setItem('nt_'+k,JSON.stringify(v))}catch(e){}},c:k=>{try{localStorage.removeItem('nt_'+k)}catch(e){}}};
+
+let CFG=Object.assign({},DEFAULTS,LS.g('config',{}));
+
+const saveCfg=()=>LS.s('config',CFG);
+
+
+
+let USERS=LS.g('users',[]), SESSION=LS.g('session',null), TX=LS.g('tx',[]), ADMIN=LS.g('admin',false);
+
+const save=()=>{LS.s('users',USERS);LS.s('session',SESSION);LS.s('tx',TX)};
+
+const me=()=>USERS.find(u=>u.email===SESSION)||null;
+
+const eur=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));
+
+const eur2=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+
+const num=n=>new Intl.NumberFormat('en-GB').format(Math.round(n));
+
+const $=s=>document.querySelector(s);
+
+const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms||8)}catch(e){}};
+
+const isVerified=u=>!!(u&&u.emailVerified);
+
+const isActive=u=>!!(u&&u.emailVerified&&(u.deposited||0)>=CFG.minDeposit);
+
+const statusOf=u=>isActive(u)?'active'🙁isVerified(u)?'verified':'unverified');
+
+
+
+/* ================= live nep-statistieken ================= */
+
+const STATS={users:2418,profit:131480,vol:4218600,payouts:12492,uptime:99.94,roi:14.6,newToday:17};
+
+const PAY=[['Kevin M.',418],['Ella B.',1220],['Ryan T.',275],['Fatima E.',860],['Neil V.',1640],['Anna S.',390],['Jordy P.',95],['Sam K.',730]];
+
+let payIdx=0;
+
+
+
+const BOTS=[
+
+ {id:'pepesniper',name:'PepeSniper AI',tag:'New-launch sniper',ds:'Scans new meme launches and snipes liquidity within 400ms.',roi:18.4,wr:78,trades:1482,risk:'High',min:100,seed:7},
+
+ {id:'solmeme',name:'SolMeme Sentinel',tag:'Solana momentum',ds:'Momentum and liquidity analysis on Solana meme pairs.',roi:24.7,wr:83,trades:964,risk:'High',min:250,seed:13},
+
+ {id:'dogepulse',name:'DogePulse Neural',tag:'Sentiment & trend',ds:'Neural sentiment model on socials plus order flow.',roi:12.1,wr:71,trades:2310,risk:'Medium',min:100,seed:21},
+
+ {id:'bonkrunner',name:'BonkRunner ML',tag:'Micro-cap rotation',ds:'Rotates capital between micro-caps with the highest volume.',roi:15.9,wr:74,trades:1744,risk:'High',min:150,seed:31},
+
+ {id:'wifwhale',name:'WIF Whales Tracker',tag:'Wallet tracking',ds:'Tracks whale wallets and copies entries with a short delay.',roi:9.8,wr:69,trades:3120,risk:'Medium',min:100,seed:44},
+
+ {id:'flokigrid',name:'Floki Grid Bot',tag:'Grid / DCA',ds:'Grid and DCA strategy on meme pairs, low volatility.',roi:7.2,wr:66,trades:5402,risk:'Low',min:100,seed:52}
+
+];
+
+const PAIRS=['PEPE/USDT','WIF/USDT','BONK/USDT','DOGE/USDT','FLOKI/USDT','BRETT/USDT','POPCAT/USDT','MOG/USDT'];
+
+
+
+/* ================= helpers ================= */
+
+function spark(seed,up,w,h){w=w||84;h=h||34;let s=(seed*9301+49297)%233280;const r=()=>{s=(s*9301+49297)%233280;return s/233280};
+
+ let v=.45,pts=[];for(let i=0;i<18;i++){v+=(r()-.42)*(up?.85:.75);v=Math.max(.06,Math.min(.94,v));pts.push(v)}
+
+ const st=w/17,d=pts.map((p,i)=>(i?'L':'M')+(i*st).toFixed(1)+','+(h-p*h).toFixed(1)).join(' ');
+
+ return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="'+(up?'#00E07A':'#FF5C6C')+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>'}
+
+const stars=n=>'★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n);
+
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2500)}
+
+function go(h){location.hash=h}
+
+function animNum(el,from,to,ms,fmt){if(!el)return;const t0=performance.now();ms=ms||700;
+
+ (function step(t){const k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);
+
+  if(k<1)requestAnimationFrame(step);else el.textContent=fmt(to)})(t0)}
+
+function flash(el,up){if(!el)return;el.classList.remove('flashup','flashdown');void el.offsetWidth;el.classList.add(up?'flashup':'flashdown');
+
+ setTimeout(()=>el.classList.remove('flashup','flashdown'),750)}
+
+function randAddr(){const c='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let s='';
+
+ for(let i=0;i<44;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
+
+const ICONS={
+
+ home:'<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>',
+
+ bot:'<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01"/></svg>',
+
+ dep:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8.5 12.5 12 16l3.5-3.5"/></svg>',
+
+ wd:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8.5 11.5 12 8l3.5 3.5"/></svg>',
+
+ user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20c1.4-3.6 4-5.4 7.5-5.4S18.1 16.4 19.5 20"/></svg>',
+
+ chart:'<svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M7.5 15l3.5-4 3 2.5L20 7"/></svg>',
+
+ shield:'<svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.2-2.9 7.4-7 9-4.1-1.6-7-4.8-7-9V6z"/></svg>',
+
+ wallet:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h.01"/></svg>',
+
+ logout:'<svg viewBox="0 0 24 24"><path d="M15 4h3.5A1.5 1.5 0 0 1 20 5.5v13A1.5 1.5 0 0 1 18.5 20H15"/><path d="M10 8l-4 4 4 4M6 12h9"/></svg>'
+
+};
+
+
+
+/* ================= user data ================= */
+
+function ensure(u){
+
+ if(!u)return;u.pos=u.pos||[];u.bots=u.bots||[];
+
+ u.wallet=u.wallet||{connected:false,address:'',at:0};
+
+ if(u.emailVerified===undefined)u.emailVerified=false;
+
+ u.bots.forEach(id=>{if(!u.pos.some(p=>p.bot===id)){
+
+  u.pos.push({bot:id,pair:PAIRS[Math.floor(Math.random()*PAIRS.length)],side:'Long',size:+(1+Math.random()*9).toFixed(2),
+
+   alloc:0,pnl:+(20+Math.random()*420).toFixed(2),pct:+(0.6+Math.random()*3.4).toFixed(2)})}});
+
+ u.pos=u.pos.filter(p=>u.bots.includes(p.bot));
+
+ u.allocated=+u.pos.reduce((s,p)=>s+(p.alloc||0),0).toFixed(2);
+
+}
+
+const userTx=em=>TX.filter(t=>t.email===(em||SESSION)).sort((a,b)=>b.ts-a.ts);
+
+
+
+/* ================= routes ================= */
+
+const ROUTES={'':'landing','/':'landing','/login':'login','/register':'register','/verify':'verify','/dashboard':'dashboard','/bots':'bots','/deposit':'deposit','/withdraw':'withdraw','/account':'account','/admin':'admin'};
+
+const PROTECTED=['dashboard','bots','deposit','withdraw','account','verify'];
+
+const NEEDS_VERIFY=['deposit','withdraw','bots'];
+
+function route(){const h=location.hash.replace('#','')||'/';return ROUTES[h]||'landing'}
+
+let ADMIN_TAB='overview';
+
+
+
+/* ================= chrome ================= */
+
+function renderChrome(){
+
+ const r=route(),u=me();
+
+ $('#hdrBal').style.display=(u&&r!=='admin')?'inline-block':'none';
+
+ if(u)$('#hdrBal').textContent=eur2(u.balance);
+
+ const tabs=[['','home','Home','#/'],['bots','bot','Bots','#/bots'],['deposit','dep','Deposit','#/deposit'],['withdraw','wd','Withdraw','#/withdraw'],['account','user','Account','#/account']];
+
+ $('#tabbar').innerHTML=tabs.map(t=>'<a class="tb '+(r===t[0]?'on':'')+'" href="'+t[3]+'">'+ICONS[t[1]]+'<span>'+t[2]+'</span></a>').join('');
+
+ const links=[['','home','Home'],['dashboard','chart','Dashboard'],['bots','bot','AI Bots'],['deposit','dep','Deposit'],['withdraw','wd','Withdraw'],['account','user','My account'],['admin','shield','Admin panel']];
+
+ $('#drawerLinks').innerHTML=links.map(l=>'<a class="lnk '+(r===l[0]?'on':'')+'" href="#'+(l[0]?'/'+l[0]:'/')+'">'+ICONS[l[1]]+l[2]+'</a>').join('')
+
+  +(me()?'':'<a class="lnk" href="#/login">'+ICONS.shield+'Log in</a><a class="lnk" href="#/register">'+ICONS.user+'Create account</a>')
+
+  +(me()?'<div class="lnk" data-action="logout">'+ICONS.logout+'Log out</div>':'');
+
+}
+
+
+
+/* ================= banners ================= */
+
+function actionBanner(u){
+
+ if(!isVerified(u))return '<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'
+
+  +'<div><b>Action verification required</b><span>Confirm your email address to unlock deposits, bots and withdrawals.</span></div></div>'
+
+  +'<a class="btn amber mb" href="#/verify">Verify email now</a>';
+
+ if(!isActive(u))return '<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'
+
+  +'<div><b>Deposit at least '+eur(CFG.minDeposit)+' to activate</b><span>You have '+eur2(u.deposited||0)+' deposited. '+eur(Math.max(0,CFG.minDeposit-(u.deposited||0)))+' to go.</span></div></div>'
+
+  +'<a class="btn primary mb" href="#/deposit">Deposit now</a>';
+
+ return '';
+
+}
+
+
+
+/* ================= VIEWS ================= */
+
+function vLanding(){
+
+ const revs=[
+
+  ['Daniel V.','DV',5,'Up 11% after 3 days on my €500 deposit. Withdrawal took 20 minutes, all clean.',2],
+
+  ['Sophie B.','SB',5,'Finally a bot that does not bleed money. The AI really filters out the garbage.',5],
+
+  ['Mark K.','MK',4,'Works well, though the €100 minimum felt steep at first. Now I get why.',7],
+
+  ['Lisa J.','LJ',5,'Works perfectly on mobile, I check everything from my phone on the go.',8],
+
+  ['Thomas D.','TD',5,'Deposited €1,000, had €1,240 after 9 days. €240 payout landed within half an hour.',14],
+
+  ['Emma R.','ER',5,'The dashboard is super clear. You see exactly what the bot is doing and why.',16],
+
+  ['Joe A.','JA',4,'Solid results, but do not expect miracles. +8% in 4 days is just fine.',21],
+
+  ['Ben H.','BH',5,'Connect wallet, deposit, done. Support replies within the hour.',23]
+
+ ];
+
+ return `
+
+ <div class="wrap">
+
+  <span class="badge">● Live · <span id="stat-users">${num(STATS.users)}</span> users</span>
+
+  <h1 class="mt">Let AI trade meme coins for you</h1>
+
+  <p class="sub">NeuroTrade AI connects 6 trained meme-coin bots to one dashboard. You deposit, the bot finds the entries, you watch your P&L live. Stop anytime.</p>
+
+
+
+  <div class="statgrid">
+
+    <div class="stat"><div class="lbl"><svg class="ico" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M7.5 15l3.5-4 3 2.5L20 7"/></svg>Bot profit 24h</div>
+
+      <div class="val g" id="stat-profit">${eur(STATS.profit)}</div><div class="hint">Last 24h · <span class="up">▲ <span id="stat-roi">14.6</span>%</span></div></div>
+
+    <div class="stat"><div class="lbl"><svg class="ico m" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20c1.4-3.6 4-5.4 7.5-5.4S18.1 16.4 19.5 20"/></svg>Users</div>
+
+      <div class="val">${num(STATS.users)}<span class="up" style="font-size:14px">+</span></div><div class="hint">+${STATS.newToday} today</div></div>
+
+    <div class="stat"><div class="lbl"><svg class="ico m" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.2-2.9 7.4-7 9-4.1-1.6-7-4.8-7-9V6z"/></svg>Volume</div>
+
+      <div class="val">€${(STATS.vol/1e6).toFixed(1)}M</div><div class="hint">Total traded</div></div>
+
+    <div class="stat"><div class="lbl"><svg class="ico m" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8.5 12.5 12 16l3.5-3.5"/></svg>Payouts</div>
+
+      <div class="val">${num(STATS.payouts)}</div><div class="hint">Avg. 22 min · <span class="up">${STATS.uptime}% uptime</span></div></div>
+
+  </div>
+
+
+
+  <div class="ticker mt"><span class="dot"></span><span>Latest payout: <b id="payName">${PAY[0][0]}</b> received <b class="green" id="payAmt">${eur(PAY[0][1])}</b> · just now</span></div>
+
+
+
+  <div class="cta-row"><a class="btn primary" href="${me()?'#/dashboard':'#/register'}">${me()?'Go to dashboard':'Create free account'}</a>
+
+   <a class="btn ghost" href="#/bots" style="flex:0 0 42%">View bots</a></div>
+
+
+
+  <div class="sec">
+
+    <div class="eyebrow">How it works</div><h2>Live in 5 steps</h2>
+
+    <div class="steps mt">
+
+      <div class="step"><div class="n">1</div><div><b>Create an account</b><div class="mini">Email and password, done in 20 seconds.</div></div></div>
+
+      <div class="step"><div class="n">2</div><div><b>Confirm your email</b><div class="mini">6-digit code unlocks your account.</div></div></div>
+
+      <div class="step"><div class="n">3</div><div><b>Deposit at least ${eur(CFG.minDeposit)}</b><div class="mini">SOL, USDT or BTC to the deposit wallet.</div></div></div>
+
+      <div class="step"><div class="n">4</div><div><b>Activate a bot</b><div class="mini">Capital moves from balance into the bot.</div></div></div>
+
+      <div class="step"><div class="n">5</div><div><b>Connect wallet & cash out</b><div class="mini">Payouts go straight to your own wallet.</div></div></div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="sec">
+
+    <div class="row"><div><div class="eyebrow">Reviews</div><h2>${num(STATS.users)}+ users</h2></div>
+
+      <div class="badge gray">★ 4.8 / 5</div></div>
+
+  </div>
+
+ </div>
+
+ <div class="rev-scroll mt">
+
+  ${revs.map(r=>`<div class="rev"><div class="row"><div style="display:flex;gap:10px;align-items:center">
+
+    <div class="av" style="width:36px;height:36px;border-radius:10px;font-size:12.5px">${r[1]}</div>
+
+    <div><b style="font-size:13.5px">${r[0]}</b><div class="mini">${r[3]} days ago · <span class="green">verified</span></div></div></div>
+
+    <div class="stars">${stars(r[2])}</div></div>
+
+    <p>${r[4]}</p></div>`).join('')}
+
+ </div>
+
+
+
+ <div class="wrap">
+
+  <div class="card">
+
+    <h3>Create an account</h3>
+
+    <p class="mini">Free. Email confirmation required, bot activation from ${eur(CFG.minDeposit)}.</p>
+
+    <form data-form="register" class="mt">
+
+      <div class="field"><label>Name</label><input name="name" placeholder="Full name" autocomplete="name" autocapitalize="words" required></div>
+
+      <div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" autocomplete="email" autocapitalize="none" inputmode="email" required></div>
+
+      <div class="field"><label>Password</label><input name="pass" type="password" placeholder="Min. 6 characters" autocomplete="new-password" minlength="6" required></div>
+
+      <button class="btn primary" type="submit">Create account</button>
+
+    </form>
+
+    <div class="center mini mt">Already have an account? <a href="#/login" class="green">Log in</a></div>
+
+  </div>
+
+  <div class="sec">
+
+    <div class="eyebrow">FAQ</div><h2>Frequently asked questions</h2>
+
+    <div class="mt">
+
+      <details><summary>Why do I need to confirm my email?</summary><p>To protect your account and to make sure withdrawal confirmations reach you. Until confirmed you will see "Action verification required".</p></details>
+
+      <details><summary>Why connect a wallet?</summary><p>Payouts go straight to your own wallet. The payout address field stays locked until your wallet is connected.</p></details>
+
+      <details><summary>Why a ${eur(CFG.minDeposit)} minimum?</summary><p>Below that, network fees and bot allocation are too large relative to the profit.</p></details>
+
+      <details><summary>How long does a payout take?</summary><p>Withdrawal requests show as <b>Pending</b> until they are approved, usually within 22 minutes.</p></details>
+
+    </div>
+
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="mini center">NeuroTrade AI · Demo platform · Not investment advice</div>
+
+ </div>`;
+
+}
+
+
+
+function vAuth(mode){
+
+ const login=mode==='login';
+
+ return `<div class="wrap">
+
+  <h1>${login?'Welcome back':'Create account'}</h1>
+
+  <p class="sub">${login?'Log in to manage your bots, balance and payouts.':'Create an account, then confirm the 6-digit code we send to your email.'}</p>
+
+  <div class="card mt2">
+
+   <form data-form="${login?'login':'register'}">
+
+    ${login?'':'<div class="field"><label>Name</label><input name="name" placeholder="Full name" autocomplete="name" autocapitalize="words" required></div>'}
+
+    <div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" autocomplete="email" autocapitalize="none" inputmode="email" required></div>
+
+    <div class="field"><label>Password</label><input name="pass" type="password" placeholder="Min. 6 characters" autocomplete="${login?'current-password':'new-password'}" ${login?'':'minlength="6"'} required></div>
+
+    <button class="btn primary" type="submit">${login?'Log in':'Create account'}</button>
+
+   </form>
+
+   <div class="center mini mt">${login?'No account yet? <a href="#/register" class="green">Sign up</a>':'Already have an account? <a href="#/login" class="green">Log in</a>'}</div>
+
+  </div>
+
+  <div class="banner mt"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.2-2.9 7.4-7 9-4.1-1.6-7-4.8-7-9V6z"/></svg>
+
+   <div><b>Email confirmation required</b><span>New accounts must confirm their email before depositing or withdrawing.</span></div></div>
+
+ </div>`;
+
+}
+
+
+
+function vVerify(){
+
+ const u=me();
+
+ if(isVerified(u))return `<div class="wrap"><h1>Email confirmed</h1>
+
+  <div class="banner"><svg class="ico" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+
+   <div><b>Your email is verified</b><span>${u.email} is confirmed. You can deposit, activate bots and withdraw.</span></div></div>
+
+  <a class="btn primary" href="#/deposit">Continue to deposit</a>
+
+  <div class="mt2"><a class="btn ghost" href="#/dashboard">Go to dashboard</a></div></div>`;
+
+ const digits=(u.code||'000000').split('');
+
+ return `<div class="wrap">
+
+  <span class="badge amber">● Action verification required</span>
+
+  <h1 class="mt">Confirm your email</h1>
+
+  <p class="sub">We sent a 6-digit code to <b class="green">${u.email}</b>. Enter it below to unlock deposits, bots and withdrawals.</p>
+
+  <div class="card mt">
+
+   <div class="eyebrow">Demo inbox</div>
+
+   <div class="row mt"><div><b>Verify your NeuroTrade account</b><div class="mini">to ${u.email}</div></div><span class="pill a">1 new</span></div>
+
+   <div class="codebox">${digits.map(d=>'<div class="d">'+d+'</div>').join('')}</div>
+
+   <div class="mini center">Code expires in 15 minutes · <span data-action="resend">resend code</span></div>
+
+  </div>
+
+  <form data-form="verify" class="mt">
+
+   <div class="field"><label>6-digit code</label>
+
+     <input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="text-align:center;letter-spacing:8px;font-size:20px;font-weight:800" required></div>
+
+   <button class="btn primary" type="submit">Confirm email</button>
+
+  </form>
+
+  <div class="banner blue mt2"><svg class="ico" viewBox="0 0 24 24" style="stroke:#4DA3FF"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+
+   <div><b>Until confirmed</b><span>Your status shows "Action verification required" and deposits are locked.</span></div></div>
+
+  <div class="mini center mt2">Wrong address? <span class="green" data-action="logout">Log out</span></div>
+
+ </div>`;
+
+}
+
+
+
+function vDashboard(){
+
+ const u=me();ensure(u);
+
+ const active=u.bots.length;
+
+ const unrl=u.pos.reduce((s,p)=>s+p.pnl,0);
+
+ const roi=u.balance>0?(unrl/u.balance*100):0;
+
+ return `<div class="wrap">
+
+  <div class="row"><h1 style="margin:0">Dashboard</h1><span class="pill ${isActive(u)?'g'🙁isVerified(u)?'b':'a')}">${statusOf(u)}</span></div>
+
+  <p class="sub mt">Hi ${u.name.split(' ')[0]}, ${isVerified(u)?'your email is confirmed.':'your account needs email confirmation.'}</p>
+
+  ${actionBanner(u)}
+
+
+
+  <div class="g2">
+
+   <div class="stat"><div class="lbl">Balance</div><div class="val" id="dash-bal">${eur2(u.balance)}</div><div class="hint">Available to trade</div></div>
+
+   <div class="stat"><div class="lbl">In bots</div><div class="val blue">${eur2(u.allocated||0)}</div><div class="hint">Allocated capital</div></div>
+
+   <div class="stat"><div class="lbl">Unrealized P&L</div><div class="val ${unrl>=0?'g':''}" id="dash-pnl">${unrl>=0?'+':''}${eur2(unrl)}</div><div class="hint">Live positions</div></div>
+
+   <div class="stat"><div class="lbl">ROI</div><div class="val ${roi>=0?'g':''}">${roi>=0?'+':''}${roi.toFixed(1)}%</div><div class="hint">Since start</div></div>
+
+  </div>
+
+
+
+  <div class="card mt2">
+
+   <div class="row"><h3>Wallet</h3><span class="pill ${u.wallet.connected?'g':'a'}">${u.wallet.connected?'connected':'not connected'}</span></div>
+
+   ${u.wallet.connected?`<div class="addr mt"><code>${u.wallet.address}</code></div>
+
+     <div class="mini mt">Payouts are sent to this wallet. Change it on the withdraw page.</div>`
+
+   :`<p class="mt">Connect your wallet to enable cash outs. Your payout goes straight to your own wallet.</p>
+
+     <button class="btn primary" data-action="connect-wallet">Connect wallet</button>`}
+
+  </div>
+
+
+
+  <div class="card mt2">
+
+   <div class="row"><h3>Open positions</h3><span class="pill ${active?'g':''}">${active} active</span></div>
+
+   ${active?`<table class="tbl mt"><thead><tr><th>Pair</th><th>Size</th><th>Alloc</th><th>P&L</th></tr></thead><tbody>
+
+     ${u.pos.map(p=>`<tr><td class="pair">${p.pair}</td><td>${p.size.toFixed(2)}</td><td>${eur(p.alloc||0)}</td>
+
+       <td><div class="green" style="font-weight:800">+$${p.pnl.toFixed(0)}</div><div class="mini green">+${p.pct.toFixed(2)}%</div></td></tr>`).join('')}
+
+   </tbody></table>`:`<p class="mt">No open positions yet. Activate a bot and capital moves from your balance into it.</p>
+
+   <a class="btn primary" href="#/bots">View bots</a>`}
+
+  </div>
+
+
+
+  <div class="card mt2">
+
+   <h3>Recent transactions</h3>
+
+   ${userTx().length?`<div class="lst mt">${userTx().slice(0,5).map(txRow).join('')}</div>`:'<p class="mini">No deposits or withdrawals yet.</p>'}
+
+   <div class="g2 mt"><a class="btn sm" href="#/deposit">Deposit</a><a class="btn sm" href="#/withdraw">Withdraw</a></div>
+
+  </div>
+
+
+
+  <div class="card mt2"><div class="row"><div><div class="eyebrow">Bot engine</div><b>Status</b></div><span class="badge ${CFG.botEngine?'':'gray'}">${CFG.botEngine?'online':'paused'}</span></div>
+
+   <div class="hr"></div>
+
+   <div class="row mini"><span>Uptime</span><span class="green">${STATS.uptime}%</span></div>
+
+   <div class="row mini mt"><span>All users profit 24h</span><span class="green" id="dash-profit">${eur(STATS.profit)}</span></div>
+
+   <div class="row mini mt"><span>Capital per bot activation</span><span class="green">${CFG.allocPct}% of balance</span></div>
+
+  </div>
+
+ </div>`;
+
+}
+
+
+
+function txRow(t){
+
+ const dep=t.type==='deposit';
+
+ const st=t.status==='credited'?'g':t.status==='pending'?'a':t.status==='paid'?'g':t.status==='rejected'?'r':'';
+
+ const label=t.status==='credited'?'Credited':t.status==='pending'?'Pending':t.status==='paid'?'Paid out':t.status==='rejected'?'Rejected':'Done';
+
+ return `<div class="item"><div class="av" style="color:${dep?'#00E07A':'#FFB84D'}">${dep?'↓':'↑'}</div>
+
+  <div class="t"><b>${dep?'Deposit':'Withdrawal'}</b><span>${new Date(t.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})} · ${t.method||'wallet'}</span></div>
+
+  <div style="text-align:right"><div style="font-weight:800">${dep?'+':'−'}${eur2(t.amount)}</div><span class="pill ${st}">${label}</span></div></div>`;
+
+}
+
+
+
+function vBots(){
+
+ const u=me();ensure(u);
+
+ return `<div class="wrap">
+
+  <h1>AI Bots</h1><p class="sub">Balance ${eur2(u.balance)} · in bots ${eur2(u.allocated||0)} · active ${u.bots.length}/${BOTS.length}</p>
+
+  ${isVerified(u)?'':'<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>Action verification required</b><span>Confirm your email before activating a bot.</span></div></div><a class="btn amber mb" href="#/verify">Verify email</a>'}
+
+  ${isActive(u)?'':'<div class="banner warn"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>Deposit at least ${eur(CFG.minDeposit)}</b><span>Activation unlocks once your deposit clears.</span></div></div><a class="btn primary mb" href="#/deposit">Deposit</a>'}
+
+  <div class="banner blue"><svg class="ico" viewBox="0 0 24 24" style="stroke:#4DA3FF"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+
+   <div><b>How activation works</b><span>Activating a bot moves ${CFG.allocPct}% of your balance into that bot. Stopping a bot returns the capital plus its P&L to your balance.</span></div></div>
+
+  ${BOTS.map(b=>{const on=u.bots.includes(b.id);const p=u.pos.find(x=>x.bot===b.id);
+
+   return `<div class="bot ${on?'on':''}">
+
+    <div class="hd">
+
+      <div class="av">${b.name.slice(0,2).toUpperCase()}</div>
+
+      <div style="flex:1;min-width:0"><div class="nm">${b.name}</div><div class="ds">${b.tag} · risk ${b.risk}</div></div>
+
+      ${spark(b.seed,true)}
+
+    </div>
+
+    <p style="margin:11px 0 0;font-size:13px">${b.ds}</p>
+
+    <div class="metrics">
+
+      <div class="metric"><div class="k">ROI 24h</div><div class="v green">+${b.roi}%</div></div>
+
+      <div class="metric"><div class="k">Win rate</div><div class="v">${b.wr}%</div></div>
+
+      <div class="metric"><div class="k">Trades</div><div class="v">${num(b.trades)}</div></div>
+
+    </div>
+
+    ${on?`<div class="hr"></div>
+
+     <div class="row mini"><span>Allocated capital</span><b class="blue">${eur(p?p.alloc:0)}</b></div>
+
+     <div class="row mini mt"><span>Live P&L</span><span class="green" style="font-weight:800" data-live-pnl="${b.id}">+$${p?p.pnl.toFixed(0):'0'}</span></div>`:''}
+
+    <div class="row mt"><span class="mini">Min. capital ${eur(b.min)}</span>
+
+      <button class="btn sm ${on?'danger':'primary'}" data-action="toggle-bot" data-bot="${b.id}">${on?'Stop & return':'Activate'}</button></div>
+
+   </div>`}).join('')}
+
+  <div class="mini center mt2">Figures are realistic demo data and not a guarantee.</div>
+
+ </div>`;
+
+}
+
+
+
+function vDeposit(){
+
+ const u=me();const txs=userTx().filter(t=>t.type==='deposit');
+
+ return `<div class="wrap">
+
+  <h1>Deposit</h1><p class="sub">Deposit at least ${eur(CFG.minDeposit)} to activate your account. Your balance is credited the moment you report the deposit.</p>
+
+  ${actionBanner(u)}
+
+  <div class="g2">
+
+   <div class="stat"><div class="lbl">Balance</div><div class="val" id="dep-bal">${eur2(u.balance)}</div><div class="hint">Available</div></div>
+
+   <div class="stat"><div class="lbl">Total deposited</div><div class="val">${eur(u.deposited||0)}</div><div class="hint">${isActive(u)?'<span class="green">Account active</span>':'Min. '+eur(CFG.minDeposit)+' required'}</div></div>
+
+  </div>
+
+
+
+  <div class="card mt2">
+
+   <div class="badge">● Deposit wallet</div>
+
+   <h2 class="mt">Step 1 · Choose a network</h2>
+
+   <div class="tabs mt mb" id="depTabs">
+
+     <div class="tab on" data-method="Solana">Solana</div><div class="tab" data-method="USDT (TRC20)">USDT</div><div class="tab" data-method="Bitcoin">Bitcoin</div>
+
+   </div>
+
+   <div class="field"><label>Wallet address · <span id="mLabel">Solana</span></label>
+
+     <div class="addr"><code id="addrTxt">${CFG.depositWallet}</code>
+
+     <button class="btn sm" data-action="copy" data-copy="${CFG.depositWallet}" style="flex:none">Copy</button></div>
+
+   </div>
+
+   <div class="mini">Only send SOL or SPL tokens to this address. Other assets may be lost.</div>
+
+
+
+   <div class="hr"></div>
+
+   <h2>Step 2 · Amount & reference</h2>
+
+   <form data-form="deposit" class="mt">
+
+     <div class="field"><label>Amount in euro (min. ${eur(CFG.minDeposit)})</label>
+
+       <input name="amount" type="number" inputmode="decimal" placeholder="${CFG.minDeposit}" min="${CFG.minDeposit}" step="1" enterkeyhint="done" required>
+
+       <div class="chips">${[CFG.minDeposit,250,500,1000,2500].map(v=>`<div class="chip" data-amt="${v}">€${num(v)}</div>`).join('')}</div>
+
+     </div>
+
+     <div class="field"><label>Transaction / reference (optional)</label><input name="ref" placeholder="e.g. 4sGj...9xQ or your name" autocapitalize="none"></div>
+
+     <button class="btn primary" type="submit">Report deposit & credit balance</button>
+
+   </form>
+
+   <div class="banner mt"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8.5 12.5 12 16l3.5-3.5"/></svg>
+
+    <div><b>Your balance shows up instantly</b><span>The coins go to the deposit wallet, but your balance is credited to your account right away so you can trade.</span></div></div>
+
+  </div>
+
+
+
+  <div class="card mt2"><h3>Deposit history</h3>
+
+   ${txs.length?`<div class="lst mt">${txs.slice(0,8).map(txRow).join('')}</div>`:'<p class="mini mt">No deposits yet.</p>'}
+
+  </div>
+
+ </div>`;
+
+}
+
+
+
+function vWithdraw(){
+
+ const u=me();ensure(u);const txs=userTx().filter(t=>t.type==='withdraw');
+
+ const wc=u.wallet.connected;
+
+ return `<div class="wrap">
+
+  <h1>Withdraw</h1><p class="sub">Cash out profit to your own wallet. Requests show as <b class="amber">Pending</b> until approved, usually within 22 minutes.</p>
+
+  ${actionBanner(u)}
+
+
+
+  <div class="card">
+
+   <div class="row"><h3 style="margin:0">Payout wallet</h3><span class="pill ${wc?'g':'a'}">${wc?'connected':'not connected'}</span></div>
+
+   ${wc?`<div class="addr mt"><code>${u.wallet.address}</code>
+
+      <button class="btn sm" data-action="copy" data-copy="${u.wallet.address}" style="flex:none">Copy</button></div>
+
+     <div class="mini mt">Your payout goes straight to this wallet. You can override the address below.</div>`
+
+   :`<p class="mt">You must connect your wallet before you can cash out. That is where the money is sent to.</p>
+
+     <button class="btn primary" data-action="connect-wallet">Connect wallet</button>
+
+     <div class="mini mt">Opens the wallet connect page.</div>`}
+
+  </div>
+
+
+
+  <div class="g2 mt">
+
+   <div class="stat"><div class="lbl">Available</div><div class="val" id="wd-bal">${eur2(u.balance)}</div><div class="hint">Instantly withdrawable</div></div>
+
+   <div class="stat"><div class="lbl">Network fee</div><div class="val">1%</div><div class="hint">Min. withdrawal ${eur(CFG.minWithdraw)}</div></div>
+
+  </div>
+
+
+
+  <div class="card mt2">
+
+   <h2>Withdrawal request</h2>
+
+   ${wc?'':'<div class="banner warn mt"><svg class="ico" viewBox="0 0 24 24" style="stroke:#FFB84D"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>Wallet not connected</b><span>The payout address stays locked until you connect.</span></div></div>'}
+
+   <form data-form="withdraw" class="mt">
+
+     <div class="field"><label>Amount in euro</label>
+
+       <input name="amount" type="number" inputmode="decimal" placeholder="${CFG.minWithdraw}" min="${CFG.minWithdraw}" step="1" enterkeyhint="done" required>
+
+       <div class="chips">
+
+         <div class="chip" data-pct="25">25%</div><div class="chip" data-pct="50">50%</div><div class="chip" data-pct="100">MAX</div>
+
+         <div class="chip" data-amt="100">€100</div><div class="chip" data-amt="500">€500</div>
+
+       </div>
+
+     </div>
+
+     <div class="field"><label>Payout address ${wc?'':'· locked'}</label>
+
+       <input name="addr" value="${wc?u.wallet.address:''}" ${wc?'':'disabled'} placeholder="${wc?'':'Connect your wallet first'}" autocapitalize="none" autocorrect="off" spellcheck="false" ${wc?'required':''}></div>
+
+     <div class="field"><label>Network</label><select name="net" ${wc?'':'disabled'}><option>Solana (SOL)</option><option>USDT (TRC20)</option><option>Bitcoin</option></select></div>
+
+     <button class="btn primary" type="submit" ${wc?'':'disabled'}>Request withdrawal</button>
+
+     ${wc?'':'<button class="btn ghost mt" type="button" data-action="connect-wallet">Connect wallet</button>'}
+
+   </form>
+
+   <div class="mini">The amount is deducted from your balance immediately and shows as <b class="amber">Pending</b> until approved.</div>
+
+  </div>
+
+
+
+  <div class="card mt2"><h3>Withdrawal history</h3>
+
+   ${txs.length?`<div class="lst mt">${txs.slice(0,8).map(txRow).join('')}</div>`:'<p class="mini mt">No withdrawals yet.</p>'}
+
+  </div>
+
+ </div>`;
+
+}
+
+
+
+function vAccount(){
+
+ const u=me();ensure(u);
+
+ return `<div class="wrap">
+
+  <h1>My account</h1>
+
+  <div class="card mt">
+
+   <div class="row"><div style="display:flex;gap:12px;align-items:center;min-width:0">
+
+     <div class="av" style="width:50px;height:50px;font-size:17px">${u.name.slice(0,2).toUpperCase()}</div>
+
+     <div style="min-width:0"><b style="font-size:16px">${u.name}</b><div class="mini" style="overflow:hidden;text-overflow:ellipsis">${u.email}</div></div></div>
+
+     <span class="pill ${isActive(u)?'g'🙁isVerified(u)?'b':'a')}">${statusOf(u)}</span>
+
+   </div>
+
+   <div class="hr"></div>
+
+   <div class="row"><span class="mini">Email status</span><b class="${isVerified(u)?'green':'amber'}">${isVerified(u)?'confirmed':'action verification required'}</b></div>
+
+   <div class="row mt"><span class="mini">Balance</span><b>${eur2(u.balance)}</b></div>
+
+   <div class="row mt"><span class="mini">In bots</span><b class="blue">${eur2(u.allocated||0)}</b></div>
+
+   <div class="row mt"><span class="mini">Total deposited</span><b>${eur(u.deposited||0)}</b></div>
+
+   <div class="row mt"><span class="mini">Wallet</span><b class="${u.wallet.connected?'green':'amber'}">${u.wallet.connected?'connected':'not connected'}</b></div>
+
+   <div class="row mt"><span class="mini">Active bots</span><b>${u.bots.length}</b></div>
+
+   <div class="row mt"><span class="mini">Member since</span><b>${new Date(u.created).toLocaleDateString('en-GB')}</b></div>
+
+  </div>
+
+
+
+  ${actionBanner(u)}
+
+  ${u.wallet.connected?'':'<button class="btn" data-action="connect-wallet">Connect wallet</button>'}
+
+
+
+  <div class="g2 mt2"><a class="btn" href="#/bots">My bots</a><a class="btn" href="#/withdraw">Withdraw</a></div>
+
+  <div class="hr"></div>
+
+  <button class="btn ghost" data-action="logout">Log out</button>
+
+  <button class="btn ghost" data-action="reset" style="margin-top:10px">Reset demo data</button>
+
+  <div class="mini center mt2">NeuroTrade AI v2.5.0 · stored on this device</div>
+
+ </div>`;
+
+}
+
+
+
+/* ================= ADMIN ================= */
+
+function vAdminLogin(){
+
+ return `<div class="wrap">
+
+  <span class="badge">● Admin</span>
+
+  <h1 class="mt">Admin panel</h1>
+
+  <p class="sub">Enter your admin code to manage users, balances, payouts and settings.</p>
+
+  <div class="card mt2">
+
+   <form data-form="adminlogin">
+
+    <div class="field"><label>Admin code</label><input name="code" type="password" placeholder="••••••" required></div>
+
+    <button class="btn primary" type="submit">Enter panel</button>
+
+   </form>
+
+   <div class="mini mt">Default code: <b class="green">${DEFAULTS.adminCode}</b> (change it in Settings)</div>
+
+  </div>
+
+ </div>`;
+
+}
+
+function adminStats(){
+
+ const totalDep=USERS.reduce((s,u)=>s+(u.deposited||0),0);
+
+ const totalBal=USERS.reduce((s,u)=>s+(u.balance||0),0);
+
+ const totalAlloc=USERS.reduce((s,u)=>s+(u.allocated||0),0);
+
+ const pend=TX.filter(t=>t.type==='withdraw'&&t.status==='pending');
+
+ return {totalDep,totalBal,totalAlloc,pend,pendSum:pend.reduce((s,t)=>s+t.amount,0)};
+
+}
+
+function vAdmin(){
+
+ if(!ADMIN)return vAdminLogin();
+
+ const st=adminStats();
+
+ const tabs=[['overview','Overview'],['users','Users'],['withdrawals','Payouts'+(st.pend.length?' ('+st.pend.length+')':'')],['deposits','Deposits'],['bots','Bots'],['settings','Settings']];
+
+ let body='';
+
+ if(ADMIN_TAB==='overview'){
+
+  body=`<div class="g2">
+
+    <div class="stat"><div class="lbl">Accounts</div><div class="val">${USERS.length}</div><div class="hint">${USERS.filter(u=>u.emailVerified).length} verified</div></div>
+
+    <div class="stat"><div class="lbl">Active</div><div class="val g">${USERS.filter(isActive).length}</div><div class="hint">Deposited ≥ ${eur(CFG.minDeposit)}</div></div>
+
+    <div class="stat"><div class="lbl">Total deposited</div><div class="val">${eur(st.totalDep)}</div><div class="hint">All time</div></div>
+
+    <div class="stat"><div class="lbl">User balances</div><div class="val">${eur(st.totalBal)}</div><div class="hint">In bots ${eur(st.totalAlloc)}</div></div>
+
+  </div>
+
+  <div class="card mt2"><div class="row"><h3 style="margin:0">Pending payouts</h3><span class="pill a">${st.pend.length}</span></div>
+
+   <div class="row mini mt"><span>Total requested</span><b class="amber">${eur(st.pendSum)}</b></div>
+
+   ${st.pend.length?`<div class="lst mt">${st.pend.slice(0,5).map(t=>adminTxRow(t)).join('')}</div>`:'<p class="mini mt">Nothing pending.</p>'}
+
+   <button class="btn sm mt" data-action="admin-tab" data-tab="withdrawals">Open payouts</button>
+
+  </div>
+
+  <div class="card mt2"><div class="row"><h3 style="margin:0">Bot engine</h3><span class="pill ${CFG.botEngine?'g':'r'}">${CFG.botEngine?'running':'paused'}</span></div>
+
+   <div class="row mini mt"><span>Capital per activation</span><b>${CFG.allocPct}% of balance</b></div>
+
+   <div class="row mini mt"><span>Min. deposit</span><b>${eur(CFG.minDeposit)}</b></div>
+
+   <div class="row mini mt"><span>Min. withdrawal</span><b>${eur(CFG.minWithdraw)}</b></div>
+
+   <button class="btn sm mt" data-action="admin-tab" data-tab="settings">Open settings</button>
+
+  </div>
+
+  <div class="card mt2"><h3>Recent activity</h3>
+
+   <div class="lst mt">${TX.slice(-6).reverse().map(t=>adminTxRow(t)).join('')||'<p class="mini">No activity yet.</p>'}</div>
+
+  </div>`;
+
+ }
+
+ if(ADMIN_TAB==='users'){
+
+  body=USERS.length?USERS.slice().reverse().map(u=>`
+
+   <div class="card mb">
+
+    <div class="row"><div style="min-width:0"><b style="font-size:14.5px">${u.name}</b><div class="mini" style="overflow:hidden;text-overflow:ellipsis">${u.email}</div></div>
+
+     <span class="pill ${isActive(u)?'g'🙁isVerified(u)?'b':'a')}">${statusOf(u)}</span></div>
+
+    <div class="hr"></div>
+
+    <div class="g2">
+
+      <div><div class="mini">Balance</div><b>${eur2(u.balance)}</b></div>
+
+      <div><div class="mini">In bots</div><b>${eur2(u.allocated||0)}</b></div>
+
+      <div><div class="mini">Deposited</div><b>${eur(u.deposited||0)}</b></div>
+
+      <div><div class="mini">Bots</div><b>${u.bots.length}</b></div>
+
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="mini">Email: <b class="${u.emailVerified?'green':'amber'}">${u.emailVerified?'confirmed':'pending'+(u.code?' · code '+u.code:'')}</b></div>
+
+    <div class="mini mt">Wallet: <b class="${u.wallet.connected?'green':'amber'}">${u.wallet.connected?u.wallet.address:'not connected'}</b></div>
+
+    <div class="mini mt">Joined ${new Date(u.created).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+
+    <div class="row mt" style="flex-wrap:wrap;gap:8px">
+
+      ${u.emailVerified?'':'<button class="btn tiny primary" data-action="admin-verify" data-email="'+u.email+'">Verify email</button>'}
+
+      <button class="btn tiny" data-action="admin-credit" data-email="${u.email}">+ Balance</button>
+
+      <button class="btn tiny" data-action="admin-debit" data-email="${u.email}">− Balance</button>
+
+      <button class="btn tiny amber" data-action="admin-setbal" data-email="${u.email}">Set balance</button>
+
+      <button class="btn tiny danger" data-action="admin-del" data-email="${u.email}">Delete</button>
+
+    </div>
+
+   </div>`).join(''):'<p class="sub">No accounts yet. Register one from the landing page.</p>';
+
+ }
+
+ if(ADMIN_TAB==='withdrawals'){
+
+  const list=TX.filter(t=>t.type==='withdraw').sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1)||b.ts-a.ts);
+
+  body=list.length?list.map(t=>{const u=USERS.find(x=>x.email===t.email)||{name:t.email,email:t.email,wallet:{}};
+
+   return `<div class="card mb">
+
+    <div class="row"><div style="min-width:0"><b>${eur2(t.amount)}</b><div class="mini">${u.name} · ${t.email}</div></div>
+
+     <span class="pill ${t.status==='pending'?'a':t.status==='paid'?'g':'r'}">${t.status}</span></div>
+
+    <div class="hr"></div>
+
+    <div class="mini">Network: ${t.method||'-'}</div>
+
+    <div class="mini mt">Address: <b>${t.addr||(u.wallet&&u.wallet.address)||'-'}</b></div>
+
+    <div class="mini mt">Requested ${new Date(t.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+
+    ${t.status==='pending'?`<div class="row mt" style="gap:8px">
+
+      <button class="btn tiny primary" data-action="admin-pay" data-id="${t.id}">Mark paid</button>
+
+      <button class="btn tiny danger" data-action="admin-reject" data-id="${t.id}">Reject & refund</button></div>`:''}
+
+   </div>`}).join(''):'<p class="sub">No withdrawal requests yet.</p>';
+
+ }
+
+ if(ADMIN_TAB==='deposits'){
+
+  const list=TX.filter(t=>t.type==='deposit').sort((a,b)=>b.ts-a.ts);
+
+  body=list.length?list.map(t=>{const u=USERS.find(x=>x.email===t.email)||{name:t.email};
+
+   return `<div class="item"><div class="av">↓</div>
+
+    <div class="t"><b>${eur2(t.amount)}</b><span>${u.name} · ${t.email}</span><span>${t.method||'-'} · ${new Date(t.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span></div>
+
+    <span class="pill ${t.status==='credited'?'g':'a'}">${t.status}</span></div>`}).join(''):'<p class="sub">No deposits yet.</p>';
+
+ }
+
+ if(ADMIN_TAB==='bots'){
+
+  body=`<div class="banner blue"><svg class="ico" viewBox="0 0 24 24" style="stroke:#4DA3FF"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+
+   <div><b>Master switch</b><span>Pausing the engine stops all P&L updates for users.</span></div></div>
+
+   <button class="btn ${CFG.botEngine?'danger':'primary'} mb" data-action="admin-engine">${CFG.botEngine?'Pause bot engine':'Start bot engine'}</button>
+
+   ${BOTS.map(b=>{const holders=USERS.filter(u=>u.bots.includes(b.id));
+
+    const alloc=holders.reduce((s,u)=>{const p=(u.pos||[]).find(x=>x.bot===b.id);return s+(p?p.alloc:0)},0);
+
+    return `<div class="item mb"><div class="av">${b.name.slice(0,2).toUpperCase()}</div>
+
+     <div class="t"><b>${b.name}</b><span>${holders.length} users · ${eur(alloc)} allocated</span></div>
+
+     <span class="pill g">+${b.roi}%</span></div>`}).join('')}`;
+
+ }
+
+ if(ADMIN_TAB==='settings'){
+
+  body=`<div class="card">
+
+   <form data-form="adminsettings">
+
+    <div class="field"><label>Wallet connect URL (your link)</label><input name="connectUrl" value="${CFG.connectUrl}" autocapitalize="none"></div>
+
+    <div class="field"><label>Open connect link in</label><select name="connectMode">
+
+      <option value="new" ${CFG.connectMode==='new'?'selected':''}>New tab (keeps the app open)</option>
+
+      <option value="same" ${CFG.connectMode==='same'?'selected':''}>Same tab (full redirect)</option></select></div>
+
+    <div class="field"><label>Deposit wallet address</label><input name="depositWallet" value="${CFG.depositWallet}" autocapitalize="none"></div>
+
+    <div class="field"><label>Minimum deposit (€)</label><input name="minDeposit" type="number" value="${CFG.minDeposit}"></div>
+
+    <div class="field"><label>Minimum withdrawal (€)</label><input name="minWithdraw" type="number" value="${CFG.minWithdraw}"></div>
+
+    <div class="field"><label>Capital per bot activation (% of balance)</label><input name="allocPct" type="number" value="${CFG.allocPct}"></div>
+
+    <div class="field"><label>Admin code</label><input name="adminCode" value="${CFG.adminCode}"></div>
+
+    <button class="btn primary" type="submit">Save settings</button>
+
+   </form>
+
+   <div class="hr"></div>
+
+   <div class="mini">Settings are stored on this device. Paste your own wallet-connect link above so every Connect wallet button redirects there.</div>
+
+  </div>
+
+  <button class="btn ghost mt" data-action="admin-logout">Log out of admin</button>
+
+  <button class="btn ghost mt" data-action="admin-nuke" style="margin-top:10px">Delete all accounts</button>`;
+
+ }
+
+ return `<div class="wrap">
+
+  <div class="row"><h1 style="margin:0">Admin</h1><span class="badge">${USERS.length} accounts</span></div>
+
+  <p class="sub mt">Full control over accounts, balances, payouts and settings.</p>
+
+  <div class="tabs mb">${tabs.map(t=>`<div class="tab ${ADMIN_TAB===t[0]?'on':''}" data-action="admin-tab" data-tab="${t[0]}">${t[1]}</div>`).join('')}</div>
+
+  ${body}
+
+  <div class="hr"></div>
+
+  <div class="mini center">Admin code: ${CFG.adminCode} · engine ${CFG.botEngine?'running':'paused'}</div>
+
+ </div>`;
+
+}
+
+function adminTxRow(t){const dep=t.type==='deposit';
+
+ const st=t.status==='credited'?'g':t.status==='pending'?'a':t.status==='paid'?'g':'r';
+
+ return `<div class="item"><div class="av" style="color:${dep?'#00E07A':'#FFB84D'}">${dep?'↓':'↑'}</div>
+
+  <div class="t"><b>${dep?'Deposit':'Payout'} ${eur2(t.amount)}</b><span>${t.email}</span></div>
+
+  <span class="pill ${st}">${t.status}</span></div>`}
+
+
+
+/* ================= render ================= */
+
+function render(){
+
+ const r=route();
+
+ if(PROTECTED.includes(r)&&!me()){location.hash='#/login';return}
+
+ if((r==='login'||r==='register')&&me()&&isVerified(me())){location.hash='#/dashboard';return}
+
+ if(NEEDS_VERIFY.includes(r)&&!isVerified(me())){location.hash='#/verify';return}
+
+ renderChrome();
+
+ const u=me();if(u){ensure(u);save()}
+
+ const V={landing:vLanding,login🙁)=>vAuth('login'),register🙁)=>vAuth('register'),verify:vVerify,dashboard:vDashboard,bots:vBots,deposit:vDeposit,withdraw:vWithdraw,account:vAccount,admin:vAdmin};
+
+ $('#view').innerHTML=V[r]();
+
+ $('#foot').style.display=(r==='landing'||r==='admin')?'none':'block';
+
+ window.scrollTo({top:0,behavior:'instant'});
+
+}
+
+function renderKeep(oldBal,up){render();if(oldBal===undefined)return;const u=me();if(!u)return;
+
+ const els=[$('#hdrBal'),$('#dash-bal'),$('#wd-bal'),$('#dep-bal')];
+
+ els.forEach(el=>{if(el)animNum(el,oldBal,u.balance,700,eur2)});
+
+ flash($('#hdrBal'),up);flash($('#dash-bal'),up)}
+
+
+
+/* ================= events ================= */
+
+document.addEventListener('click',e=>{
+
+ const a=e.target.closest('[data-action]');
+
+ if(a){const act=a.dataset.action;buzz(6);
+
+  if(act==='drawer'){openDrawer();return}
+
+  if(act==='close-drawer'){closeDrawer();return}
+
+  if(act==='a2hs-close'){$('#a2hs').classList.remove('on');LS.s('a2hsOff',1);return}
+
+  if(act==='copy'){const txt=a.dataset.copy;
+
+   if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('Copied')).catch(()=>toast('Copy: '+txt));else toast('Copy: '+txt);return}
+
+  if(act==='logout'){SESSION=null;save();toast('Logged out');go('#/');return}
+
+  if(act==='reset'){['users','session','tx'].forEach(LS.c);USERS=[];SESSION=null;TX=[];toast('Demo data reset');go('#/');return}
+
+  if(act==='connect-wallet'){const u=me();if(!u)return;
+
+   if(!u.wallet.connected){u.wallet={connected:true,address:randAddr(),at😀ate.now()};save();toast('Wallet connected');buzz([10,30,10])}
+
+   else toast('Wallet already connected');
+
+   render();
+
+   setTimeout(()=>{try{if(CFG.connectMode==='same')location.href=CFG.connectUrl;else window.open(CFG.connectUrl,'_blank')}catch(err){}},350);
+
+   return}
+
+  if(act==='toggle-bot'){const u=me();if(!u)return;const id=a.dataset.bot;
+
+   if(!isVerified(u)){toast('Confirm your email first');go('#/verify');return}
+
+   if(!isActive(u)){toast('Deposit at least '+eur(CFG.minDeposit)+' first');go('#/deposit');return}
+
+   const old=u.balance;
+
+   if(u.bots.includes(id)){const p=u.pos.find(x=>x.bot===id);const back=+((p?p.alloc:0)+(p?p.pnl:0)).toFixed(2);
+
+    u.balance=+(u.balance+Math.max(0,back)).toFixed(2);
+
+    u.bots=u.bots.filter(x=>x!==id);ensure(u);toast('Bot stopped · '+eur(Math.max(0,back))+' returned to balance')}
+
+   else{const alloc=Math.max(0,Math.floor(u.balance*(CFG.allocPct/100)));
+
+    if(alloc<25){toast('Balance too low to allocate');return}
+
+    u.balance=+(u.balance-alloc).toFixed(2);u.bots.push(id);ensure(u);
+
+    const p=u.pos.find(x=>x.bot===id);if(p)p.alloc=alloc;
+
+    toast(eur(alloc)+' moved into the bot')}
+
+   save();renderKeep(old,u.balance>old);return}
+
+  if(act==='admin-tab'){ADMIN_TAB=a.dataset.tab;render();return}
+
+  if(act==='admin-logout'){ADMIN=false;LS.s('admin',false);render();return}
+
+  if(act==='admin-engine'){CFG.botEngine=!CFG.botEngine;saveCfg();toast(CFG.botEngine?'Engine running':'Engine paused');render();return}
+
+  if(act==='admin-nuke'){USERS=[];TX=[];SESSION=null;save();toast('All accounts deleted');render();return}
+
+  if(act==='admin-verify'){const u=USERS.find(x=>x.email===a.dataset.email);if(u){u.emailVerified=true;save();toast('Email verified: '+u.email)}render();return}
+
+  if(act==='admin-credit'){const u=USERS.find(x=>x.email===a.dataset.email);const v=parseFloat(prompt('Add to balance (€)','100'));if(!v)return;
+
+   u.balance=+(u.balance+v).toFixed(2);save();toast('+'+eur(v));render();return}
+
+  if(act==='admin-debit'){const u=USERS.find(x=>x.email===a.dataset.email);const v=parseFloat(prompt('Subtract from balance (€)','100'));if(!v)return;
+
+   u.balance=+Math.max(0,u.balance-v).toFixed(2);save();toast('−'+eur(v));render();return}
+
+  if(act==='admin-setbal'){const u=USERS.find(x=>x.email===a.dataset.email);const v=parseFloat(prompt('Set balance to (€)',String(u.balance)));if(isNaN(v))return;
+
+   u.balance=+v.toFixed(2);save();toast('Balance set');render();return}
+
+  if(act==='admin-del'){const u=USERS.find(x=>x.email===a.dataset.email);if(!confirm('Delete '+u.email+'?'))return;
+
+   USERS=USERS.filter(x=>x.email!==u.email);TX=TX.filter(t=>t.email!==u.email);save();toast('Deleted');render();return}
+
+  if(act==='admin-pay'){const t=TX.find(x=>x.id===a.dataset.id);t.status='paid';t.paidAt=Date.now();save();toast('Marked as paid');render();return}
+
+  if(act==='admin-reject'){const t=TX.find(x=>x.id===a.dataset.id);const u=USERS.find(x=>x.email===t.email);
+
+   t.status='rejected';if(u)u.balance=+(u.balance+t.amount).toFixed(2);save();toast('Rejected · refunded');render();return}
+
+  if(act==='resend'){const u=me();if(u){u.code=String(Math.floor(100000+Math.random()*900000));save();toast('New code sent');render()}return}
+
+ }
+
+ const tab=e.target.closest('#depTabs .tab');
+
+ if(tab){document.querySelectorAll('#depTabs .tab').forEach(t=>t.classList.remove('on'));tab.classList.add('on');
+
+  const m=tab.dataset.method;$('#mLabel').textContent=m;
+
+  const map={'Solana':CFG.depositWallet,'USDT (TRC20)':'TQm3mE9xTradeBot7VeniceAImeme4coin3zP','Bitcoin':'bc1q9x8k3meme0coin7trade4bot9venice2xq7z'};
+
+  $('#addrTxt').textContent=map[m];const cp=document.querySelector('[data-action="copy"]');if(cp)cp.dataset.copy=map[m];return}
+
+ const chip=e.target.closest('.chip');
+
+ if(chip){const box=chip.closest('.chips'),inp=box.closest('form').querySelector('[name=amount]');
+
+  box.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));chip.classList.add('on');
+
+  const u=me();if(chip.dataset.amt)inp.value=chip.dataset.amt;
+
+  else if(chip.dataset.pct)inp.value=Math.floor((u.balance||0)*(+chip.dataset.pct/100));return}
+
+});
+
+function openDrawer(){$('#drawer').classList.add('on');$('#scrim').classList.add('on');
+
+ if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()}
+
+function closeDrawer(){$('#drawer').classList.remove('on');$('#scrim').classList.remove('on')}
+
+
+
+document.addEventListener('submit',e=>{
+
+ const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();
+
+ if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+
+ const k=f.dataset.form,fd=new FormData(f),u=me();
+
+ if(k==='register'){
+
+  const email=(fd.get('email')+'').trim().toLowerCase(),pass=fd.get('pass')+'',name=(fd.get('name')+'').trim();
+
+  if(pass.length<6)return toast('Password must be at least 6 characters');
+
+  if(USERS.some(x=>x.email===email))return toast('This email is already registered');
+
+  USERS.push({email,pass,name,balance:0,allocated:0,deposited:0,emailVerified:false,
+
+   code:String(Math.floor(100000+Math.random()*900000)),wallet:{connected:false,address:'',at:0},
+
+   bots:[],pos:[],created😀ate.now()});
+
+  SESSION=email;save();toast('Account created · check your email');go('#/verify');return}
+
+ if(k==='verify'){const c=(fd.get('code')+'').trim();
+
+  if(c!==u.code)return toast('Wrong code, try again');
+
+  u.emailVerified=true;save();toast('Email confirmed');go('#/deposit');return}
+
+ if(k==='login'){const email=(fd.get('email')+'').trim().toLowerCase(),pass=fd.get('pass')+'';
+
+  const found=USERS.find(x=>x.email===email&&x.pass===pass);
+
+  if(!found)return toast('Wrong email or password');
+
+  SESSION=email;save();toast('Welcome back, '+found.name.split(' ')[0]);
+
+  go(found.emailVerified?'#/dashboard':'#/verify');return}
+
+ if(k==='deposit'){const amt=parseFloat(fd.get('amount'));
+
+  if(!amt||amt<CFG.minDeposit)return toast('Minimum deposit is '+eur(CFG.minDeposit));
+
+  const old=u.balance,method=(document.querySelector('#mLabel')||{}).textContent||'Solana';
+
+  const tx={id:'d'+Date.now(),email:SESSION,type:'deposit',amount:amt,status:'pending',ts😀ate.now(),method,ref:fd.get('ref')||''};
+
+  TX.push(tx);save();toast('Deposit reported · verifying...');render();
+
+  setTimeout(()=>{const cu=me();if(!cu)return;tx.status='credited';
+
+   cu.balance=+(cu.balance+amt).toFixed(2);cu.deposited=+(cu.deposited+amt).toFixed(2);
+
+   save();toast(eur(amt)+' credited to your balance');buzz([10,40,10]);
+
+   if(route()==='deposit'||route()==='dashboard')renderKeep(old,true);},3600);return}
+
+ if(k==='withdraw'){
+
+  if(!u.wallet.connected)return toast('Connect your wallet first');
+
+  const amt=parseFloat(fd.get('amount'));
+
+  if(!amt||amt<CFG.minWithdraw)return toast('Minimum withdrawal is '+eur(CFG.minWithdraw));
+
+  if(amt>u.balance)return toast('Balance too low (max '+eur2(u.balance)+')');
+
+  const addr=(fd.get('addr')+'').trim()||u.wallet.address;
+
+  const old=u.balance;u.balance=+(u.balance-amt).toFixed(2);
+
+  TX.push({id:'w'+Date.now(),email:SESSION,type:'withdraw',amount:amt,status:'pending',ts😀ate.now(),
+
+   method🙁fd.get('net')||'Solana'),addr});
+
+  save();toast('Withdrawal requested · Pending');renderKeep(old,false);return}
+
+ if(k==='adminlogin'){const c=fd.get('code')+'';
+
+  if(c!==CFG.adminCode)return toast('Wrong admin code');
+
+  ADMIN=true;LS.s('admin',true);toast('Welcome, admin');render();return}
+
+ if(k==='adminsettings'){const g=x=>(fd.get(x)+'').trim();
+
+  CFG.connectUrl=g('connectUrl')||DEFAULTS.connectUrl;CFG.connectMode=g('connectMode');
+
+  CFG.depositWallet=g('depositWallet')||DEFAULTS.depositWallet;
+
+  CFG.minDeposit=parseFloat(g('minDeposit'))||DEFAULTS.minDeposit;
+
+  CFG.minWithdraw=parseFloat(g('minWithdraw'))||DEFAULTS.minWithdraw;
+
+  CFG.allocPct=Math.max(1,Math.min(90,parseFloat(g('allocPct'))||DEFAULTS.allocPct));
+
+  CFG.adminCode=g('adminCode')||DEFAULTS.adminCode;
+
+  saveCfg();toast('Settings saved');render();return}
+
+});
+
+
+
+/* ================= iOS keyboard + swipe ================= */
+
+document.addEventListener('focusin',e=>{if(e.target.matches('input,select,textarea'))document.body.classList.add('kb')});
+
+document.addEventListener('focusout',()=>setTimeout(()=>document.body.classList.remove('kb'),120));
+
+let tsX=0,tsY=0,tsT=0;
+
+document.addEventListener('touchstart',e=>{const t=e.touches[0];tsX=t.clientX;tsY=t.clientY;tsT=Date.now()},{passive:true});
+
+document.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-tsX,dy=t.clientY-tsY,dt=Date.now()-tsT;
+
+ if(dt>600||Math.abs(dx)<55||Math.abs(dy)>70)return;
+
+ if(dx>0&&tsX❤4&&!$('#drawer').classList.contains('on'))openDrawer();
+
+ else if(dx<0&&$('#drawer').classList.contains('on'))closeDrawer()},{passive:true});
+
+
+
+/* ================= live ticker ================= */
+
+function tick(){
+
+ if(!CFG.botEngine)return;
+
+ STATS.profit+=(Math.random()-0.34)*1400;if(STATS.profit<126000)STATS.profit+=900;if(STATS.profit>137000)STATS.profit-=900;
+
+ STATS.roi=+(13.9+Math.random()*1.6).toFixed(1);
+
+ if(Math.random()<0.30){STATS.users++;STATS.newToday++}
+
+ if(Math.random()<0.12){STATS.payouts++}
+
+ const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+
+ set('stat-profit',eur(STATS.profit));set('stat-roi',STATS.roi);set('stat-users',num(STATS.users));set('dash-profit',eur(STATS.profit));
+
+ const u=me();
+
+ if(u&&u.pos.length){
+
+  u.pos.forEach(p=>{p.pnl=+(p.pnl+(Math.random()-0.42)*9).toFixed(2);if(p.pnl<0)p.pnl=+(p.pnl+2).toFixed(2);
+
+   p.pct=+(p.pct+(Math.random()-0.45)*0.14).toFixed(2);if(p.pct<0.05)p.pct=0.05;
+
+   const el=document.querySelector('[data-live-pnl="'+p.bot+'"]');if(el)el.textContent='+$'+p.pnl.toFixed(0)});
+
+  const tot=u.pos.reduce((s,p)=>s+p.pnl,0);set('dash-pnl',(tot>=0?'+':'')+eur2(tot));save()}
+
+ if(Math.random()<0.5){payIdx=(payIdx+1)%PAY.length;set('payName',PAY[payIdx][0]);set('payAmt',eur(PAY[payIdx][1]))}
+
+}
+
+setInterval(tick,2600);
+
+
+
+(function(){const ua=navigator.userAgent||'';
+
+ const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+
+ const standalone=window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;
+
+ if(isIOS&&!standalone&&!LS.g('a2hsOff',0))setTimeout(()=>$('#a2hs').classList.add('on'),1800)})();
+
+
+
+window.addEventListener('hashchange',()=>{closeDrawer();render()});
+
+render();
+
+})();
+
+</script>
+
+</body>
+
+</html>
